@@ -87,7 +87,7 @@ If you can't remember a shortcut or need to search by name, open the palette.
 
 - **Recents**: The top bar tracks your most recently used symbols for quick access.
 
-- **Tables**: There are also tabs containig tables of IPA symbols in more familiar layouts. Clicking on the symbols in these tables will insert them in your document just like from the search palette.
+- **Tables**: There are also tabs containing tables of IPA symbols in more familiar layouts. Clicking on the symbols in these tables will insert them in your document just like from the search palette.
 
 <img src="Screenshots/screenshot2.png" width="700" alt="Alphabetter table">
 
