@@ -84,7 +84,7 @@ If you can't remember a shortcut or need to search by name, open the palette.
 
 ### 4. Menu Bar Cheat Sheet
 
-Click the Alphabetter icon (the little IPA bottle 🍾) in your macOS menu bar to see a quick cheat sheet for Tones and Diacritics without opening the full window.
+Click the Alphabetter icon (the little IPA bottle 🍾) in your macOS menu bar to see a quick cheat sheet for tones and other common diacritics without opening the full window.
 
 
 ## Copyright © 2025 Mikhael Hayes. All rights reserved
