@@ -81,7 +81,7 @@ If you can't remember a shortcut or need to search by name, open the palette.
 
 <img src="Screenshots/screenshot1.png" width="400" alt="Alphabetter tooltips">
 
-- **Search**: Type to filter by feature or name.
+- **Search**: Type to filter by feature or name. You can also filter out the noise and just show results for English symbols by clicking `ENG` next to the search bar.
 
 - **Insert**: Click any symbol to type it into your active document.
 
