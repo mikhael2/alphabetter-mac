@@ -1,5 +1,5 @@
 # Alphabetter for macOS
-ˈæɫ.fəˌbɛ.ɾɚ ɪz æn æp fɔ˞ using the International Phonetic Alphabet. The IPA is accessible via key cycling and a palette. And yes, I actually typed that first bit using my app, and you can too!
+ˈæɫ.fəˌbɛ.ɾɚ ɪz æn æp fɔɹ using the International Phonetic Alphabet. The IPA is accessible via key cycling and a palette. And yes, I actually typed that first bit using my app, and you can too!
 
 <img src="Screenshots/screenshot3.png" width="300" alt="Alphabetter app icon">
 
