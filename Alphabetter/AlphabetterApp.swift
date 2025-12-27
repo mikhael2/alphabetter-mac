@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct IPACyclerApp: App {
+struct AlphabetterApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     var body: some Scene {
