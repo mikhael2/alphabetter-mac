@@ -11,9 +11,9 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		B23B63CE2EF5D86C00A03C98 /* IPACycler */ = {
+		B23B63CE2EF5D86C00A03C98 /* Alphabetter */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = IPACycler;
+			path = Alphabetter;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -32,7 +32,7 @@
 		B23B63C32EF5D86C00A03C98 = {
 			isa = PBXGroup;
 			children = (
-				B23B63CE2EF5D86C00A03C98 /* IPACycler */,
+				B23B63CE2EF5D86C00A03C98 /* Alphabetter */,
 				B23B63CD2EF5D86C00A03C98 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -61,7 +61,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				B23B63CE2EF5D86C00A03C98 /* IPACycler */,
+				B23B63CE2EF5D86C00A03C98 /* Alphabetter */,
 			);
 			name = Alphabetter;
 			packageProductDependencies = (
@@ -271,7 +271,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.local.IPACycler;
+				PRODUCT_BUNDLE_IDENTIFIER = com.local.Alphabetter;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
@@ -317,7 +317,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.local.IPACycler;
+				PRODUCT_BUNDLE_IDENTIFIER = com.local.Alphabetter;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
