@@ -98,6 +98,14 @@ Click the Alphabetter icon (the little IPA bottle 🍾) in your macOS menu bar t
 
 <img src="Screenshots/screenshot5.png" width="500" alt="Alphabetter menu bar cheat sheet">
 
+## License & Copyright
 
-## Copyright © 2025 Mikhael Hayes. All rights reserved
-You may download and use this app for personal and educational purposes. Redistribution of modified versions is not permitted.
+**App Logic & Code:**
+Copyright © 2025 Mikhael Hayes. All rights reserved.
+The source code and software design of this application are proprietary. You may use this app for personal and educational purposes, but redistribution of the app's source code or modified versions of the software logic is not permitted without the author's consent.
+
+**IPA Data & Charts:**
+This app includes reproductions of the International Phonetic Alphabet (IPA). The IPA chart and data remain under the Creative Commons Attribution-Sharealike 3.0 Unported License (CC-BY-SA).
+
+*Attribution:*
+"IPA Chart, http://www.internationalphoneticassociation.org/content/ipa-chart, available under a Creative Commons Attribution-Sharealike 3.0 Unported License. Copyright © 2015 International Phonetic Association."
