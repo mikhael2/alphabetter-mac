@@ -1,5 +1,7 @@
 # Alphabetter for macOS
 Alphabetter (or [ˈæɫ.fəˌbɛ.ɾɚ] 🤪) is an app for using the International Phonetic Alphabet. The IPA is accessible via key cycling and a palette.
+<img src="Screenshots/screenshot3.png" width="500" alt="Alphabetter app icon">
+
 
 ## Installation
 
@@ -67,12 +69,14 @@ For speed, some common symbols have dedicated overrides or special cycling rules
 | **Opt + Period (.)** | **◌̆** | Breve (for short vowels) |
 
 ### 3. The Visual Palette
+<img src="Screenshots/screenshot4.png" width="500" alt="Alphabetter app icon">
 
 If you can't remember a shortcut or need to search by name, open the palette.
 
 - **Shortcut**: Hold Right Option + Spacebar (this is customizable in the app settings).
 
 - **Tooltips**: Hover over symbols to see their descriptions, shortcuts (if available), and unicode ID.
+<img src="Screenshots/screenshot1.png" width="500" alt="Alphabetter app icon">
 
 - **Search**: Type to filter by feature or name.
 
@@ -81,6 +85,8 @@ If you can't remember a shortcut or need to search by name, open the palette.
 - **Recents**: The top bar tracks your most recently used symbols for quick access.
 
 - **Tables**: There are also tabs containig tables of IPA symbols in more familiar layouts. Clicking on the symbols in these tables will insert them in your document just like from the search palette.
+<img src="Screenshots/screenshot2.png" width="500" alt="Alphabetter app icon">
+
 
 ### 4. Menu Bar Cheat Sheet
 
