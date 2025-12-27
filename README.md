@@ -1,6 +1,7 @@
 # Alphabetter for macOS
-Alphabetter (or [ˈæɫ.fəˌbɛ.ɾɚ] 🤪) is an app for using the International Phonetic Alphabet. The IPA is accessible via key cycling and a palette.
-<img src="Screenshots/screenshot3.png" width="500" alt="Alphabetter app icon">
+ˈæɫ.fəˌbɛ.ɾɚ ɪz æn æp fɔɹ using the International Phonetic Alphabet. The IPA is accessible via key cycling and a palette. And yes, I actually typed that first bit using my app, and you can too!
+
+<img src="Screenshots/screenshot3.png" width="300" alt="Alphabetter app icon">
 
 
 ## Installation
@@ -42,7 +43,7 @@ If/when I release a new version:
 ## Using Alphabetter
 Alphabetter lives in your menu bar and stays out of your way until you need it. The app relies on the Right Option key to trigger IPA input.
 
-### 1. The Trigger (Right Option)
+### 1. Cycle Trigger (Right Option)
 
 To type IPA symbols, simply hold the Right Option key on your keyboard.
 
@@ -69,6 +70,7 @@ For speed, some common symbols have dedicated overrides or special cycling rules
 | **Opt + Period (.)** | **◌̆** | Breve (for short vowels) |
 
 ### 3. The Visual Palette
+
 <img src="Screenshots/screenshot4.png" width="500" alt="Alphabetter app icon">
 
 If you can't remember a shortcut or need to search by name, open the palette.
@@ -76,7 +78,8 @@ If you can't remember a shortcut or need to search by name, open the palette.
 - **Shortcut**: Hold Right Option + Spacebar (this is customizable in the app settings).
 
 - **Tooltips**: Hover over symbols to see their descriptions, shortcuts (if available), and unicode ID.
-<img src="Screenshots/screenshot1.png" width="500" alt="Alphabetter app icon">
+
+<img src="Screenshots/screenshot1.png" width="400" alt="Alphabetter tooltips">
 
 - **Search**: Type to filter by feature or name.
 
@@ -85,12 +88,15 @@ If you can't remember a shortcut or need to search by name, open the palette.
 - **Recents**: The top bar tracks your most recently used symbols for quick access.
 
 - **Tables**: There are also tabs containig tables of IPA symbols in more familiar layouts. Clicking on the symbols in these tables will insert them in your document just like from the search palette.
-<img src="Screenshots/screenshot2.png" width="500" alt="Alphabetter app icon">
+
+<img src="Screenshots/screenshot2.png" width="700" alt="Alphabetter table">
 
 
 ### 4. Menu Bar Cheat Sheet
 
 Click the Alphabetter icon (the little IPA bottle 🍾) in your macOS menu bar to see a quick cheat sheet for tones and other common diacritics without opening the full window.
+
+<img src="Screenshots/screenshot5.png" width="500" alt="Alphabetter menu bar cheat sheet">
 
 
 ## Copyright © 2025 Mikhael Hayes. All rights reserved
