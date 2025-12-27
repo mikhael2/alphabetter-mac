@@ -6,7 +6,7 @@
 
 ## Installation
 
-1. Download the latest `Alphabetter.zip` from the **Releases** page.
+1. Download the latest `Alphabetter.zip` from the **Releases** page. If you don't see a releases page, that means I'm still in the alpha stage, but you can request the app from me via email.
 2. Double‑click the zip to extract `Alphabetter.app`.
 3. Drag `Alphabetter.app` into your **Applications** folder.
 
