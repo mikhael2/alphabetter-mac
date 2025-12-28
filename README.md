@@ -32,7 +32,7 @@ Alphabetter needs Accessibility permission to read keystrokes and type IPA chara
 4. Find **Alphabetter** in the list and turn it **On**.  
    - If it’s not there yet, click **+**, choose `Alphabetter.app` from Applications, and add it, then enable it.
 
-> **Important:** After changing Accessibility permissions, quit and relaunch Alphabetter to make sure it picks up the new access. If you don't do this, you'll probably be able to use the palette. If you the full keyboard experience (which is a time-saver), then be sure to grant access and relaunch.
+> **Important:** After changing Accessibility permissions, quit and relaunch Alphabetter to make sure it picks up the new access. If you don't do this, you'll only be able to use the palette. For the full keyboard experience (which is a time-saver), be sure to grant access and relaunch.
 
 ### Updating
 
