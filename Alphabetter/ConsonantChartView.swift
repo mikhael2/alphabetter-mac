@@ -1,122 +1,110 @@
 import SwiftUI
 
 struct ConsonantChartView: View {
-    let manners = IPAManner.allCases
-    let places = IPAPlace.allCases
-
-    // Helper to find symbols for a specific cell (Pulmonic)
-    func symbols(for manner: IPAManner, place: IPAPlace) -> (voiceless: IPASymbol?, voiced: IPASymbol?) {
-        let cellSymbols = ipaDatabase.filter { $0.consonantManner == manner && $0.consonantPlace == place }
-        let voiceless = cellSymbols.first { $0.consonantVoicing == .voiceless }
-        let voiced = cellSymbols.first { $0.consonantVoicing == .voiced }
-        return (voiceless, voiced)
-    }
+    private let manners = IPAManner.allCases
+    private let places = IPAPlace.allCases
     
-    func isImpossible(manner: IPAManner, place: IPAPlace) -> Bool {
-        switch (place, manner) {
-        case (.pharyngeal, .plosive), (.pharyngeal, .nasal), (.pharyngeal, .lateralFricative), (.pharyngeal, .lateralApproximant),
-             (.glottal, .nasal), (.glottal, .trill), (.glottal, .tapOrFlap), (.glottal, .lateralFricative), (.glottal, .approximant), (.glottal, .lateralApproximant),
-             (.labiodental, .plosive), (.labiodental, .lateralFricative), (.labiodental, .lateralApproximant),
-             (.dental, .trill), (.dental, .tapOrFlap), (.dental, .lateralFricative), (.dental, .approximant), (.dental, .lateralApproximant),
-             (.palatal, .trill), (.palatal, .tapOrFlap),
-             (.velar, .trill), (.velar, .tapOrFlap),
-             (.retroflex, .trill):
-            return true
-        default:
-            return false
-        }
-    }
-
     var body: some View {
         ScrollView([.horizontal, .vertical]) {
             VStack(spacing: 30) {
-                // --- 1. PULMONIC CHART ---
-                VStack(alignment: .leading, spacing: 5) {
-                    Text("Pulmonic Consonants").font(.headline)
-                    Grid(alignment: .center, horizontalSpacing: 1, verticalSpacing: 1) {
-                        GridRow {
-                            Color.clear.frame(width: 100, height: 30)
-                            ForEach(places) { place in
-                                Text(place.rawValue.capitalized)
-                                    .font(.caption).fontWeight(.bold)
-                                    .frame(width: 60, height: 30)
-                                    .background(Color.green.opacity(0.2))
-                            }
-                        }
-                        ForEach(manners) { manner in
-                            GridRow {
-                                Text(manner.rawValue.capitalized)
-                                    .font(.caption).fontWeight(.bold)
-                                    .frame(width: 100, height: 40, alignment: .leading)
-                                    .padding(.leading, 5)
-                                    .background(Color.green.opacity(0.2))
-                                
-                                ForEach(places) { place in
-                                    let (voiceless, voiced) = symbols(for: manner, place: place)
-                                    HStack(spacing: 0) {
-                                        if let sym = voiceless { IPAButton(symbol: sym) } else { Color.clear }
-                                        if let sym = voiced { IPAButton(symbol: sym) } else { Color.clear }
-                                    }
-                                    .frame(width: 60, height: 40)
-                                    .background(isImpossible(manner: manner, place: place) ? Color.gray.opacity(0.3) : Color(NSColor.controlBackgroundColor))
-                                    .border(Color.gray.opacity(0.2))
-                                }
-                            }
-                        }
-                    }
-                }
-                
+                pulmonicSection
                 Divider()
-                
-                // --- 2. NON-PULMONIC CHART ---
-                VStack(alignment: .leading, spacing: 5) {
-                    Text("Non-Pulmonic Consonants").font(.headline)
-                    NonPulmonicView()
-                }
-
+                nonPulmonicSection
                 Divider()
-
-                // --- 3. OTHER SYMBOLS & AFFRICATES ---
                 HStack(alignment: .top, spacing: 20) {
                     VStack(alignment: .leading, spacing: 5) {
                         Text("Other Symbols").font(.headline)
                         OtherSymbolsView()
                     }
-                    
                     VStack(alignment: .leading, spacing: 5) {
                         Text("Affricates").font(.headline)
                         AffricatesView()
                     }
                 }
+            }.padding()
+        }
+    }
+    
+    // --- 1. PULMONIC CHART (Grid Layout) ---
+    private var pulmonicSection: some View {
+        VStack(alignment: .leading, spacing: 5) {
+            Text("Pulmonic Consonants").font(.headline)
+            Grid(horizontalSpacing: 1, verticalSpacing: 1) {
+                GridRow {
+                    Color.clear.frame(width: 100, height: 30)
+                    ForEach(places) { place in
+                        Text(place.rawValue.capitalized).font(.caption).fontWeight(.bold)
+                            .frame(width: 60, height: 30).background(Color.green.opacity(0.2))
+                    }
+                }
+                ForEach(manners) { manner in
+                    GridRow {
+                        Text(manner.rawValue.capitalized).font(.caption).fontWeight(.bold)
+                            .frame(width: 100, height: 40, alignment: .leading).padding(.leading, 5).background(Color.green.opacity(0.2))
+                        ForEach(places) { place in cell(manner: manner, place: place) }
+                    }
+                }
             }
-            .padding()
+        }
+    }
+    
+    private func cell(manner: IPAManner, place: IPAPlace) -> some View {
+        let (voiceless, voiced) = getSymbols(manner: manner, place: place)
+        let impossible = isImpossible(manner: manner, place: place)
+        return HStack(spacing: 0) {
+            if let s = voiceless { IPAButton(symbol: s) } else { Color.clear }
+            if let s = voiced { IPAButton(symbol: s) } else { Color.clear }
+        }
+        .frame(width: 60, height: 40)
+        .background(impossible ? Color.gray.opacity(0.3) : Color(NSColor.controlBackgroundColor))
+        .border(Color.gray.opacity(0.2))
+    }
+    
+    // --- 2. NON-PULMONIC (Clicks & Implosives) ---
+    private var nonPulmonicSection: some View {
+        VStack(alignment: .leading, spacing: 5) {
+            Text("Non-Pulmonic Consonants").font(.headline)
+            NonPulmonicView()
+        }
+    }
+    
+    // --- HELPERS ---
+    private func getSymbols(manner: IPAManner, place: IPAPlace) -> (IPASymbol?, IPASymbol?) {
+        let syms = ipaDatabase.filter { $0.consonantManner == manner && $0.consonantPlace == place }
+        return (syms.first { $0.consonantVoicing == .voiceless }, syms.first { $0.consonantVoicing == .voiced })
+    }
+    
+    private func isImpossible(manner: IPAManner, place: IPAPlace) -> Bool {
+        switch (place, manner) {
+        case (.pharyngeal, .plosive), (.pharyngeal, .nasal), (.pharyngeal, .lateralFricative), (.pharyngeal, .lateralApproximant): return true
+        case (.glottal, .nasal), (.glottal, .trill), (.glottal, .tapOrFlap), (.glottal, .lateralFricative), (.glottal, .approximant), (.glottal, .lateralApproximant): return true
+        case (.labiodental, .plosive), (.labiodental, .lateralFricative), (.labiodental, .lateralApproximant): return true
+        case (.dental, .trill), (.dental, .tapOrFlap), (.dental, .lateralFricative), (.dental, .approximant), (.dental, .lateralApproximant): return true
+        case (.palatal, .trill), (.palatal, .tapOrFlap), (.velar, .trill), (.velar, .tapOrFlap), (.retroflex, .trill): return true
+        default: return false
         }
     }
 }
 
-// --- SUBVIEWS ---
+// MARK: - Subviews
 
 struct NonPulmonicView: View {
-    let clicks = [("ʘ", "Bilabial"), ("ǀ", "Dental"), ("ǃ", "(Post)alveolar"), ("ǂ", "Palatoalveolar"), ("ǁ", "Alveolar lateral")]
-    let implosives = [("ɓ", "Bilabial"), ("ɗ", "Dental/alveolar"), ("ʄ", "Palatal"), ("ɠ", "Velar"), ("ʛ", "Uvular")]
+    let clicks = ["ʘ", "ǀ", "ǃ", "ǂ", "ǁ"]
+    let implosives = ["ɓ", "ɗ", "ʄ", "ɠ", "ʛ"]
     
     var body: some View {
         HStack(alignment: .top, spacing: 1) {
-            buildTable(title: "Clicks", items: clicks)
-            buildTable(title: "Voiced Implosives", items: implosives)
-        }
-        .frame(maxWidth: 500)
+            buildTable(title: "Clicks", chars: clicks)
+            buildTable(title: "Voiced Implosives", chars: implosives)
+        }.frame(maxWidth: 500)
     }
     
-    func buildTable(title: String, items: [(String, String)]) -> some View {
+    func buildTable(title: String, chars: [String]) -> some View {
         VStack(spacing: 1) {
             Text(title).font(.caption).fontWeight(.bold).frame(maxWidth: .infinity, minHeight: 30).background(Color.gray.opacity(0.2))
-            ForEach(items, id: \.0) { item in
-                HStack(spacing: 1) {
-                    if let sym = ipaDatabase.first(where: { $0.char == item.0 }) {
-                        IPAButton(symbol: sym).frame(width: 40, height: 40).background(Color(NSColor.controlBackgroundColor))
-                    }
-                    Text(item.1).font(.caption).padding(.leading, 5).frame(maxWidth: .infinity, alignment: .leading).frame(height: 40).background(Color(NSColor.controlBackgroundColor))
+            ForEach(chars, id: \.self) { char in
+                if let sym = ipaDatabase.first(where: { $0.char == char }) {
+                    ClickableTableRow(symbol: sym)
                 }
             }
         }.border(Color.gray.opacity(0.2))
@@ -124,38 +112,114 @@ struct NonPulmonicView: View {
 }
 
 struct OtherSymbolsView: View {
-    // Explicit list matching the user's image
     let symbols = ["ʍ", "w", "ɥ", "ʜ", "ʢ", "ʡ", "ɕ", "ʑ", "ɺ", "ɧ"]
-    
     var body: some View {
         VStack(spacing: 1) {
             ForEach(symbols, id: \.self) { char in
-                HStack(spacing: 1) {
-                    if let sym = ipaDatabase.first(where: { $0.char == char }) {
-                        IPAButton(symbol: sym).frame(width: 40, height: 35).background(Color(NSColor.controlBackgroundColor))
-                        Text(sym.tags).font(.caption).padding(.leading, 5).frame(width: 200, alignment: .leading).frame(height: 35).background(Color(NSColor.controlBackgroundColor))
-                    }
-                }
+                SymbolRow(char: char, width: 200)
             }
-        }
-        .border(Color.gray.opacity(0.2))
+        }.border(Color.gray.opacity(0.2))
     }
 }
 
 struct AffricatesView: View {
     let symbols = ["t͡s", "t͡ʃ", "t͡ɕ", "ʈ͡ʂ", "d͡z", "d͡ʒ", "d͡ʑ", "ɖ͡ʐ"]
-    
     var body: some View {
         VStack(spacing: 1) {
             ForEach(symbols, id: \.self) { char in
+                SymbolRow(char: char, width: 220, btnWidth: 50)
+            }
+        }.border(Color.gray.opacity(0.2))
+    }
+}
+
+// MARK: - Interactive Rows
+
+// 1. For "Other Symbols" & "Affricates" lists
+struct SymbolRow: View {
+    let char: String
+    let width: CGFloat
+    var btnWidth: CGFloat = 40
+    
+    @EnvironmentObject var hoverState: HoverState
+    @State private var isHovering = false
+    let purple = Color(red: 175/255, green: 104/255, blue: 239/255)
+    
+    var body: some View {
+        if let sym = ipaDatabase.first(where: { $0.char == char }) {
+            Button(action: {
+                EventTapManager.shared.insertFromMenu(sym.char)
+                RecentsManager.shared.add(sym)
+            }) {
                 HStack(spacing: 1) {
-                    if let sym = ipaDatabase.first(where: { $0.char == char }) {
-                        IPAButton(symbol: sym).frame(width: 50, height: 35).background(Color(NSColor.controlBackgroundColor))
-                        Text(sym.tags).font(.caption).padding(.leading, 5).frame(width: 220, alignment: .leading).frame(height: 35).background(Color(NSColor.controlBackgroundColor))
-                    }
+                    // Symbol (Left)
+                    Text(sym.char)
+                        .font(.system(size: 24, weight: .regular, design: .serif))
+                        .foregroundColor(isHovering ? purple : .primary)
+                        .scaleEffect(isHovering ? 1.2 : 1.0)
+                        .frame(width: btnWidth, height: 35)
+                        .background(Color(NSColor.controlBackgroundColor))
+                        .contentShape(Rectangle())
+                    
+                    // Description (Right)
+                    Text(sym.tags)
+                        .font(.caption)
+                        .foregroundColor(isHovering ? purple : .primary)
+                        .padding(.leading, 5)
+                        .frame(width: width, alignment: .leading)
+                        .frame(height: 35)
+                        .background(Color(NSColor.controlBackgroundColor))
+                        .contentShape(Rectangle())
                 }
+                .background(Color(NSColor.controlBackgroundColor).opacity(isHovering ? 0.6 : 1.0))
+            }
+            .buttonStyle(PlainButtonStyle())
+            .onHover { hovering in
+                isHovering = hovering
+                hoverState.isHovering = hovering
+                if hovering { hoverState.info = sym.tooltipInfo }
             }
         }
-        .border(Color.gray.opacity(0.2))
+    }
+}
+
+// 2. For the Non-Pulmonic Tables (Clicks/Implosives)
+struct ClickableTableRow: View {
+    let symbol: IPASymbol
+    @EnvironmentObject var hoverState: HoverState
+    @State private var isHovering = false
+    let purple = Color(red: 175/255, green: 104/255, blue: 239/255)
+    
+    var body: some View {
+        Button(action: {
+            EventTapManager.shared.insertFromMenu(symbol.char)
+            RecentsManager.shared.add(symbol)
+        }) {
+            HStack(spacing: 1) {
+                // Symbol (Left)
+                Text(symbol.char)
+                    .font(.system(size: 24, weight: .regular, design: .serif))
+                    .foregroundColor(isHovering ? purple : .primary)
+                    .scaleEffect(isHovering ? 1.2 : 1.0)
+                    .frame(width: 40, height: 40)
+                    .background(Color(NSColor.controlBackgroundColor))
+                
+                // Description (Right)
+                Text(symbol.name.replacingOccurrences(of: "click", with: "").capitalized)
+                    .font(.caption)
+                    .foregroundColor(isHovering ? purple : .primary)
+                    .padding(.leading, 5)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .frame(height: 40)
+                    .background(Color(NSColor.controlBackgroundColor))
+            }
+            .background(Color(NSColor.controlBackgroundColor).opacity(isHovering ? 0.6 : 1.0))
+        }
+        .buttonStyle(PlainButtonStyle())
+        .onHover { hovering in
+            isHovering = hovering
+            hoverState.isHovering = hovering
+            if hovering { hoverState.info = symbol.tooltipInfo }
+        }
     }
 }
