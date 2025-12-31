@@ -40,7 +40,7 @@ Alphabetter needs Accessibility permission to read keystrokes and type IPA chara
 
 ### Updating
 
-If/when I release a new version:
+Check for updates by clicking the menu bar icon → Settings → Check for updates.
 
 1. Quit Alphabetter if it’s running.
 2. Download the new `Alphabetter.zip` from the **Releases** page.

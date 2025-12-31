@@ -7,6 +7,8 @@ struct AlphabetterApp: App {
 }
 
 struct SettingsView: View {
+    @ObservedObject var updater = UpdateChecker.shared
+    
     @AppStorage("hideDockIcon") private var hideDockIcon = false
     @AppStorage("triggerKeyIndex") private var triggerKeyIndex = 0
     
@@ -14,21 +16,49 @@ struct SettingsView: View {
     
     var body: some View {
         Form {
+            // --- SECTION 1: SHORTCUTS ---
             Section(header: Text("Global Shortcut")) {
                 Text("Hold **Right Option** and press:").foregroundColor(.secondary)
                 Picker("Trigger Key:", selection: $triggerKeyIndex) {
                     ForEach(0..<keys.count, id: \.self) { i in Text(keys[i].0).tag(i) }
                 }
                 .pickerStyle(SegmentedPickerStyle())
+                .onChange(of: triggerKeyIndex) { _, _ in updateTriggerKey() }
+            }
+            
+            // --- SECTION 2: UPDATES ---
+            Section(header: Text("Updates")) {
+                HStack {
+                    Button("Check for Updates") {
+                        updater.checkForUpdates()
+                    }
+                    .disabled(updater.isChecking)
+                    
+                    if updater.isChecking {
+                        ProgressView().controlSize(.small).padding(.leading, 5)
+                    }
+                }
                 
-                .onChange(of: triggerKeyIndex) { _, _ in
-                    updateTriggerKey()
+                // Status Text
+                if !updater.updateStatus.isEmpty {
+                    Text(updater.updateStatus)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .padding(.top, 2)
+                    
+                    // Download Button
+                    if updater.newVersionURL != nil {
+                        Button("Quit & Download Update") {
+                            updater.downloadAndQuit()
+                        }
+                        .padding(.top, 2)
+                    }
                 }
             }
             
+            // --- SECTION 3: APPEARANCE ---
             Section(header: Text("Appearance")) {
                 Toggle("Hide Dock Icon", isOn: $hideDockIcon)
-                    
                     .onChange(of: hideDockIcon) { _, isHidden in
                         NSApp.setActivationPolicy(isHidden ? .accessory : .regular)
                         if !isHidden { NSApp.activate(ignoringOtherApps: true) }
@@ -39,7 +69,7 @@ struct SettingsView: View {
                     .foregroundColor(.secondary)
             }
         }
-        .frame(width: 350, height: 200)
+        .frame(width: 350, height: 250)
         .padding()
         .onAppear { updateTriggerKey() }
     }
@@ -117,10 +147,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         addItem("Nasalized ( ̃ )", "[⇧⌥S]", "\u{0303}")
         addItem("Rhoticity ( ˞ )", "[⇧⌥R]", "˞")
         addItem("No Aud. Rel. ( ̚ )", "[⇧⌥L]", "̚")
-    
+        
         quickMenu.addItem(NSMenuItem.separator())
         
-        // 4. TONES (Common)
+        // 4. TONES
         addItem("Low ( ̀ )", "[⇧⌥2]", "\u{0300}")
         addItem("High ( ́ )", "[⇧⌥4]", "\u{0301}")
         
@@ -135,14 +165,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(quitItem)
         statusBarItem.menu = menu
     }
-    
     @objc func openSettings() {
+            NSApp.activate(ignoringOtherApps: true) // Brings app to front
             if settingsWindow == nil {
-                let w = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 350, height: 200), styleMask: [.titled, .closable, .resizable], backing: .buffered, defer: false)
+                let w = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 350, height: 250), styleMask: [.titled, .closable, .resizable], backing: .buffered, defer: false)
                 w.title = "Settings"; w.contentView = NSHostingView(rootView: SettingsView()); w.center(); w.isReleasedWhenClosed = false
                 settingsWindow = w
             }
-            settingsWindow?.makeKeyAndOrderFront(nil); NSApp.activate(ignoringOtherApps: true)
+            settingsWindow?.makeKeyAndOrderFront(nil)
         }
         
         @objc func openPalette() {
