@@ -34,8 +34,9 @@ Alphabetter needs Accessibility permission to read keystrokes and type IPA chara
 2. Click **Open System Settings**.
 3. Find **Alphabetter.app** in the list and toggle it **On**.  
    - If it’s not there yet, click **+**, choose `Alphabetter.app` from Applications, and add it, then enable it.
+4. After granting permission, quit Alphabetter (via the new bottle icon in your menu bar) and relaunch to make sure it picks up the new access. If you don't do this, the keyboard shortcuts won't work. 
 
-> **Important:** After changing Accessibility permissions, quit Alphabetter (via the new bottle icon in your menu bar) and relaunch to make sure it picks up the new access. If you don't do this, the keyboard shortcuts won't work.
+> **Privacy:** None of your data is collected, stored, or transmitted. The Accessibility permission is strictly required because macOS treats the "interception" of global keystrokes (to detect the Right Option key) and the automated "typing" of IPA symbols as sensitive system-level actions. This app operates entirely locally on your machine.
 
 ### Updating
 
