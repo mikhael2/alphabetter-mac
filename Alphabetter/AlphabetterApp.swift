@@ -20,7 +20,7 @@ struct SettingsView: View {
                     ForEach(0..<keys.count, id: \.self) { i in Text(keys[i].0).tag(i) }
                 }
                 .pickerStyle(SegmentedPickerStyle())
-                // FIX 1: New two-parameter syntax (ignoring old value)
+                
                 .onChange(of: triggerKeyIndex) { _, _ in
                     updateTriggerKey()
                 }
@@ -28,7 +28,7 @@ struct SettingsView: View {
             
             Section(header: Text("Appearance")) {
                 Toggle("Hide Dock Icon", isOn: $hideDockIcon)
-                    // FIX 2: New two-parameter syntax
+                    
                     .onChange(of: hideDockIcon) { _, isHidden in
                         NSApp.setActivationPolicy(isHidden ? .accessory : .regular)
                         if !isHidden { NSApp.activate(ignoringOtherApps: true) }
