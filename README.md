@@ -22,7 +22,7 @@ Because this is a small, non–App Store app, macOS will probably show an “uni
 5. Next to the dialog "'Alphabetter.app' was blocked to protect your Mac", click "Open Anyway".
 7. In the new dialog that appears, click **Open Anyway* * again.
 
-<img src="Screenshots/screenshot6.png" width="500" alt="Alphabetter app icon">
+<img src="Screenshots/screenshot6.png" width="500" alt="System settings permissions">
 
 After this, you can open Alphabetter normally (Dock, Spotlight, Launchpad, etc.).
 
@@ -103,7 +103,7 @@ If you can't remember a shortcut or need to search by name, open the palette.
 
 Click the Alphabetter icon (the little IPA bottle 🍾) in your macOS menu bar to see a dropdown for quickly inserting tones and other common diacritics without opening the full window.
 
-<img src="Screenshots/screenshot5.png" width="500" alt="Alphabetter menu bar cheat sheet">
+<img src="Screenshots/screenshot5.png" width="500" alt="Alphabetter menu bar quick insert">
 
 ### 5. Settings
 
