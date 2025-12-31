@@ -9,8 +9,7 @@
 > **Important:** This app is only supported for macOS 14.2 (Sonoma) and higher (including macOS 26.2 Tahoe). Please update your computer before proceeding with the installation.
 
 1. Download the latest `Alphabetter.zip` from <a href="https://github.com/mikhael2/alphabetter-mac/releases" target="_blank">Releases</a>.
-2. Double‑click the downloaded zip to extract `Alphabetter.app`.
-3. Drag `Alphabetter.app` into your **Applications** folder.
+2. If the file appears as `Alphabetter.app`, just drag it into your applications folder. If it downloads as `Alphabetter.zip`, double-click it, then drag the `.app` file into your applications folder.
 
 ### First launch
 
@@ -18,7 +17,12 @@ Because this is a small, non–App Store app, macOS will probably show an “uni
 
 1. In Finder, go to **Applications**.
 2. Right‑click `Alphabetter.app` and choose **Open**.
-3. In the dialog that appears, click **Open** again.
+3. A warning will pop saying "Alphabetter.app Not Opened: Move to Trash or Done". Do not click either yet.
+4. Go to your System Settings → Privacy & Security → Security.
+5. Next to the dialog "'Alphabetter.app' was blocked to protect your Mac", click "Open Anyway".
+7. In the new dialog that appears, click **Open Anyway* * again.
+
+<img src="Screenshots/screenshot6.png" width="500" alt="Alphabetter app icon">
 
 After this, you can open Alphabetter normally (Dock, Spotlight, Launchpad, etc.).
 
