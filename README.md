@@ -17,10 +17,10 @@ Because this is a small, non–App Store app, macOS will probably show an “uni
 
 1. In Finder, go to **Applications**.
 2. Right‑click `Alphabetter.app` and choose **Open**.
-3. A warning will pop saying "Alphabetter.app Not Opened: Move to Trash or Done". Do not click either yet.
+3. A warning will pop saying "Alphabetter.app Not Opened: Move to Trash or Done". Click **Done**.
 4. Go to your System Settings → Privacy & Security → Security.
-5. Next to the dialog "'Alphabetter.app' was blocked to protect your Mac", click "Open Anyway".
-7. In the new dialog that appears, click **Open Anyway* * again.
+5. Next to the dialog "'Alphabetter.app' was blocked to protect your Mac", click **Open Anyway**.
+7. In the new dialog that appears, click **Open Anyway**
 
 <img src="Screenshots/screenshot6.png" width="500" alt="System settings permissions">
 
@@ -30,13 +30,12 @@ After this, you can open Alphabetter normally (Dock, Spotlight, Launchpad, etc.)
 
 Alphabetter needs Accessibility permission to read keystrokes and type IPA characters.
 
-1. On first launch, macOS will show a dialog asking to grant access.
+1. After clicking **Open Anyway**, a dialog box will appear saying "'Alphabetter.app' would like to control this computer using accessibility features."
 2. Click **Open System Settings**.
-3. Go to **Privacy & Security → Accessibility**.
-4. Find **Alphabetter** in the list and turn it **On**.  
+3. Find **Alphabetter.app** in the list and toggle it **On**.  
    - If it’s not there yet, click **+**, choose `Alphabetter.app` from Applications, and add it, then enable it.
 
-> **Important:** After changing Accessibility permissions, quit and relaunch Alphabetter to make sure it picks up the new access. If you don't do this, the keyboard shortcuts won't work.
+> **Important:** After changing Accessibility permissions, quit Alphabetter (via the new bottle icon in your menu bar) and relaunch to make sure it picks up the new access. If you don't do this, the keyboard shortcuts won't work.
 
 ### Updating
 
@@ -44,8 +43,7 @@ If/when I release a new version:
 
 1. Quit Alphabetter if it’s running.
 2. Download the new `Alphabetter.zip` from the **Releases** page.
-3. Double-click (unzip) the ZIP archive to find the new app.
-3. Drag the old `Alphabetter.app` in Applications to the trash; place the new app in the Applications folder.
+3. Drag the old `Alphabetter.app` in Applications to the trash; place the new app in the Applications folder. You may need to regrant accessibility permissions.
 
 ## Using Alphabetter
 Alphabetter lives in your menu bar and stays out of your way until you need it. The app relies on the Right Option key to trigger IPA input.
