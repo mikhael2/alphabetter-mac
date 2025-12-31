@@ -32,15 +32,16 @@ Alphabetter needs Accessibility permission to read keystrokes and type IPA chara
 4. Find **Alphabetter** in the list and turn it **On**.  
    - If it’s not there yet, click **+**, choose `Alphabetter.app` from Applications, and add it, then enable it.
 
-> **Important:** After changing Accessibility permissions, quit and relaunch Alphabetter to make sure it picks up the new access. If you don't do this, you'll only be able to use the palette. For the full keyboard experience (which is a time-saver), be sure to grant access and relaunch.
+> **Important:** After changing Accessibility permissions, quit and relaunch Alphabetter to make sure it picks up the new access. If you don't do this, the keyboard shortcuts won't work.
 
 ### Updating
 
 If/when I release a new version:
 
 1. Quit Alphabetter if it’s running.
-2. Download the new `Alphabetter.zip` from Releases.
-3. Replace the old `Alphabetter.app` in Applications with the new one.
+2. Download the new `Alphabetter.zip` from the **Releases** page.
+3. Double-click (unzip) the ZIP archive to find the new app.
+3. Drag the old `Alphabetter.app` in Applications to the trash; place the new app in the Applications folder.
 
 ## Using Alphabetter
 Alphabetter lives in your menu bar and stays out of your way until you need it. The app relies on the Right Option key to trigger IPA input.
@@ -49,16 +50,16 @@ Alphabetter lives in your menu bar and stays out of your way until you need it. 
 
 To type IPA symbols, simply hold the Right Option key on your keyboard.
 
-Hold Right Option + Press a Letter: types the most common IPA variant for that letter.
-
-Keep Holding Right Option + Press Again: cycles through other variants.
+- Hold Right Option + Press a Letter: Types the most common IPA variant for that letter.
+- Keep Holding Right Option + Press Again: Cycles through other variants.
 
 Example:
 
-- Hold Right Option + press n → ŋ (engma)
-- Press n again (while holding Option) → ɲ (palatal nasal)
-- Press n again → ɳ (retroflex nasal)
-You can also type common diacritics using Right Option + Shift + a key. For example, to type an aspirated pʰ, you would type p then Right Option + Shift + h.
+- Hold `Right Option` + press `n` → `ŋ` (engma)
+- Press `n` again (while holding `Option`) → `ɲ` (palatal nasal)
+- Press `n` again → `ɳ` (retroflex nasal)
+
+You can also type common diacritics using `Right Option` + `Shift` + a key. For example, to type an aspirated `pʰ`, you would type `p` then `Right Option` + `Shift` + `h`.
 
 ### 2. Special Shortcuts
 
@@ -77,7 +78,7 @@ For speed, some common symbols have dedicated overrides or special cycling rules
 
 If you can't remember a shortcut or need to search by name, open the palette.
 
-- **Shortcut**: Hold Right Option + Spacebar (this is customizable in the app settings).
+- **Shortcut**: Hold `Right Option` + `Spacebar` (this is customizable in the app settings).
 
 - **Tooltips**: Hover over symbols to see their descriptions, shortcuts (if available), and unicode ID.
 
@@ -94,11 +95,17 @@ If you can't remember a shortcut or need to search by name, open the palette.
 <img src="Screenshots/screenshot2.png" width="700" alt="Alphabetter table">
 
 
-### 4. Menu Bar Cheat Sheet
+### 4. Menu Bar "Quick Insert"
 
-Click the Alphabetter icon (the little IPA bottle 🍾) in your macOS menu bar to see a quick cheat sheet for tones and other common diacritics without opening the full window.
+Click the Alphabetter icon (the little IPA bottle 🍾) in your macOS menu bar to see a dropdown for quickly inserting tones and other common diacritics without opening the full window.
 
 <img src="Screenshots/screenshot5.png" width="500" alt="Alphabetter menu bar cheat sheet">
+
+### 5. Settings
+
+Access the settings via the meu bar icon (or `Cmd` + `,` while the palette is open).
+- Global Shortcut: Change the key used to toggle the visual palette (default is `Spacebar`)
+- Hide Dock Icon: Check this box to make Alphabetter run exclusively in the menu bar
 
 ## License & Copyright
 
