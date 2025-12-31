@@ -6,9 +6,9 @@
 
 ## Installation
 
-> **Important:** This app is only supported on macOS 26 aka Tahoe. Please update your computer before proceeding with the installation.
+> **Important:** This app is only supported for macOS 14.2 (Sonoma) and higher (including macOS 26.2 Tahoe). Please update your computer before proceeding with the installation.
 
-1. Download the latest `Alphabetter.zip` from the **Releases** page. If you don't see a releases page, that means I'm still in the alpha stage, but you can request the app from me via email.
+1. Download the latest `Alphabetter.zip` from the **Releases** page. If you don't see a releases page, that means I'm still in the alpha stage, but you can request the app from me via email (mikhael2 [at] illinois [dot] edu).
 2. Double‑click the zip to extract `Alphabetter.app`.
 3. Drag `Alphabetter.app` into your **Applications** folder.
 

@@ -7,7 +7,9 @@ struct AlphabetterApp: App {
 }
 
 struct SettingsView: View {
+    @AppStorage("hideDockIcon") private var hideDockIcon = false
     @AppStorage("triggerKeyIndex") private var triggerKeyIndex = 0
+    
     let keys = [("Space", KeyCodes.space), ("Return", KeyCodes.returnKey), ("/ ?", KeyCodes.slash)]
     
     var body: some View {
@@ -18,10 +20,27 @@ struct SettingsView: View {
                     ForEach(0..<keys.count, id: \.self) { i in Text(keys[i].0).tag(i) }
                 }
                 .pickerStyle(SegmentedPickerStyle())
-                .onChange(of: triggerKeyIndex) { _, _ in updateTriggerKey() }
-            }.padding()
+                // FIX 1: New two-parameter syntax (ignoring old value)
+                .onChange(of: triggerKeyIndex) { _, _ in
+                    updateTriggerKey()
+                }
+            }
+            
+            Section(header: Text("Appearance")) {
+                Toggle("Hide Dock Icon", isOn: $hideDockIcon)
+                    // FIX 2: New two-parameter syntax
+                    .onChange(of: hideDockIcon) { _, isHidden in
+                        NSApp.setActivationPolicy(isHidden ? .accessory : .regular)
+                        if !isHidden { NSApp.activate(ignoringOtherApps: true) }
+                    }
+                
+                Text(hideDockIcon ? "App will run in menu bar only." : "App will show in Dock and menu bar.")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
         }
-        .frame(width: 300, height: 120).padding()
+        .frame(width: 350, height: 200)
+        .padding()
         .onAppear { updateTriggerKey() }
     }
     
@@ -36,6 +55,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var settingsWindow: NSWindow?
     
     func applicationDidFinishLaunching(_ notification: Notification) {
+        let shouldHide = UserDefaults.standard.bool(forKey: "hideDockIcon")
+        NSApp.setActivationPolicy(shouldHide ? .accessory : .regular)
+        
         EventTapManager.shared.onTogglePalette = { [weak self] in self?.openPalette() }
         setupStatusBar()
         EventTapManager.shared.start()
@@ -64,22 +86,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let quickInsertItem = NSMenuItem(title: "Quick Insert", action: nil, keyEquivalent: "")
         let quickMenu = NSMenu()
         
-        // Helper to add sections
         func addHeader(_ title: String) {
             let item = NSMenuItem(title: title, action: nil, keyEquivalent: "")
             item.isEnabled = false
             quickMenu.addItem(item)
         }
         
-        // AUTO-PADDING HELPER:
         func addItem(_ title: String, _ shortcut: String, _ char: String) {
             let paddingCount = max(0, 24 - title.count)
             let padding = String(repeating: " ", count: paddingCount)
             let paddedTitle = "  " + title + padding + "\t" + shortcut
-            
             let item = NSMenuItem(title: paddedTitle, action: #selector(insertDiacritic(_:)), keyEquivalent: "")
-            item.target = self
-            item.representedObject = char
+            item.target = self; item.representedObject = char
             quickMenu.addItem(item)
         }
         
@@ -88,26 +106,24 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         addItem("Length ( ː )", "[⌥;]", "ː")
         addItem("Tie Bar ( ͡ )", "[⌥F]", "͡")
         addItem("Syllabic ( ̩ )", "[⇧⌥F]", "\u{0329}")
-        addItem("No Aud. Rel. ( ̚ )", "[⇧⌥L]", "̚")
         
         quickMenu.addItem(NSMenuItem.separator())
         
         // 2. MODIFIERS
-
         addItem("Aspiration ( ʰ )", "[⇧⌥H]", "ʰ")
         addItem("Palatalized ( ʲ )", "[⇧⌥J]", "ʲ")
         addItem("Labialized ( ʷ )", "[⇧⌥W]", "ʷ")
         addItem("Velarized ( ˠ )", "[⇧⌥Y]", "ˠ")
         addItem("Nasalized ( ̃ )", "[⇧⌥S]", "\u{0303}")
         addItem("Rhoticity ( ˞ )", "[⇧⌥R]", "˞")
-
-        
-        
+        addItem("No Aud. Rel. ( ̚ )", "[⇧⌥L]", "̚")
+    
         quickMenu.addItem(NSMenuItem.separator())
         
         // 4. TONES (Common)
         addItem("Low ( ̀ )", "[⇧⌥2]", "\u{0300}")
         addItem("High ( ́ )", "[⇧⌥4]", "\u{0301}")
+        
         addItem("Rising ( ̌ )", "[⇧⌥6]", "\u{030C}")
         addItem("Falling ( ̂ )", "[⇧⌥7]", "\u{0302}")
         
@@ -121,26 +137,26 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     @objc func openSettings() {
-        if settingsWindow == nil {
-            let w = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 350, height: 200), styleMask: [.titled, .closable, .resizable], backing: .buffered, defer: false)
-            w.title = "Settings"; w.contentView = NSHostingView(rootView: SettingsView()); w.center(); w.isReleasedWhenClosed = false
-            settingsWindow = w
+            if settingsWindow == nil {
+                let w = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 350, height: 200), styleMask: [.titled, .closable, .resizable], backing: .buffered, defer: false)
+                w.title = "Settings"; w.contentView = NSHostingView(rootView: SettingsView()); w.center(); w.isReleasedWhenClosed = false
+                settingsWindow = w
+            }
+            settingsWindow?.makeKeyAndOrderFront(nil); NSApp.activate(ignoringOtherApps: true)
         }
-        settingsWindow?.makeKeyAndOrderFront(nil); NSApp.activate(ignoringOtherApps: true)
-    }
-    
-    @objc func openPalette() {
-        if paletteWindow == nil {
-            let w = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 600, height: 500), styleMask: [.titled, .closable, .resizable, .utilityWindow, .fullSizeContentView], backing: .buffered, defer: false)
-            w.isOpaque = false; w.backgroundColor = .clear; w.titlebarAppearsTransparent = true; w.titleVisibility = .visible; w.title = "[ˈæɫ.fəˌbɛ.ɾɚ]"
-            w.contentView = NSHostingView(rootView: PaletteView()); w.center(); w.isReleasedWhenClosed = false
-            paletteWindow = w
+        
+        @objc func openPalette() {
+            if paletteWindow == nil {
+                let w = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 600, height: 500), styleMask: [.titled, .closable, .resizable, .utilityWindow, .fullSizeContentView], backing: .buffered, defer: false)
+                w.isOpaque = false; w.backgroundColor = .clear; w.titlebarAppearsTransparent = true; w.titleVisibility = .visible; w.title = "[ˈæɫ.fəˌbɛ.ɾɚ]"
+                w.contentView = NSHostingView(rootView: PaletteView()); w.center(); w.isReleasedWhenClosed = false
+                paletteWindow = w
+            }
+            paletteWindow?.makeKeyAndOrderFront(nil); NSApp.activate(ignoringOtherApps: true)
         }
-        paletteWindow?.makeKeyAndOrderFront(nil); NSApp.activate(ignoringOtherApps: true)
+        
+        @objc func insertDiacritic(_ sender: NSMenuItem) {
+            if let char = sender.representedObject as? String { EventTapManager.shared.insertFromMenu(char) }
+        }
+        @objc func quitApp() { NSApplication.shared.terminate(nil) }
     }
-    
-    @objc func insertDiacritic(_ sender: NSMenuItem) {
-        if let char = sender.representedObject as? String { EventTapManager.shared.insertFromMenu(char) }
-    }
-    @objc func quitApp() { NSApplication.shared.terminate(nil) }
-}
