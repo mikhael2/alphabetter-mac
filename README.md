@@ -40,7 +40,7 @@ Alphabetter needs Accessibility permission to read keystrokes and type IPA chara
 
 ### Updating
 
-Check for updates by clicking the menu bar icon → Settings → Check for updates.
+Check for updates by clicking the menu bar icon (the little IPA bottle 🍾) → Settings → Check for updates.
 
 1. Quit Alphabetter if it’s running.
 2. Download the new `Alphabetter.zip` from the **Releases** page.
@@ -100,15 +100,16 @@ If you can't remember a shortcut or need to search by name, open the palette.
 
 ### 4. Menu Bar "Quick Insert"
 
-Click the Alphabetter icon (the little IPA bottle 🍾) in your macOS menu bar to see a dropdown for quickly inserting tones and other common diacritics without opening the full window.
+Click the Alphabetter menu bar icon (the little IPA bottle 🍾) in your macOS menu bar to see a dropdown for quickly inserting tones and other common diacritics without opening the full window.
 
 <img src="Screenshots/screenshot5.png" width="500" alt="Alphabetter menu bar quick insert">
 
 ### 5. Settings
 
 Access the settings via the meu bar icon (or `Cmd` + `,` while the palette is open).
-- Global Shortcut: Change the key used to toggle the visual palette (default is `Spacebar`)
-- Hide Dock Icon: Check this box to make Alphabetter run exclusively in the menu bar
+- Global Shortcut: Change the key used to toggle the visual palette (default is `Spacebar`).
+- Check for Updates: Click to check the GitHub for new versions of the app.
+- Hide Dock Icon: Check this box to make Alphabetter run exclusively in the menu bar.
 
 #### Support my work!
 
