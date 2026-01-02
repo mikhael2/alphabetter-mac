@@ -95,10 +95,10 @@ If you can't remember a shortcut or need to search by name, open the palette.
 
 - **Tables**: There are also tabs containing tables of IPA symbols in more familiar layouts. Clicking on the symbols in these tables will insert them in your document just like from the search palette.
 
-You can leave the palette any time by hitting the `escape` key.
 
 <img src="Screenshots/screenshot2.png" width="700" alt="Alphabetter table">
 
+You can leave the palette any time by hitting the `escape` key.
 
 ### 4. Menu Bar "Quick Insert"
 
