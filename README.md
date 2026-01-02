@@ -98,7 +98,7 @@ If you can't remember a shortcut or need to search by name, open the palette.
 
 <img src="Screenshots/screenshot2.png" width="700" alt="Alphabetter table">
 
-You can leave the palette any time by hitting the `escape` key.
+You can leave the palette any time by hitting the `Escape` key.
 
 ### 4. Menu Bar "Quick Insert"
 
