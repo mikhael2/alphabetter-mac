@@ -113,6 +113,18 @@ Access the settings via the meu bar icon (or `Cmd` + `,` while the palette is op
 - Check for Updates: Click to check the GitHub for new versions of the app.
 - Hide Dock Icon: Check this box to make Alphabetter run exclusively in the menu bar.
 
+## 🗺️ Roadmap
+
+- [x] Key cycling logic
+- [x] GUI: Palette view and clickable IPA charts
+- [ ] Themes!
+- [ ] Customizable filters/profiles (currently just static ENG)
+- [ ] Favorites list
+- [ ] Practice: Rapid identification
+- [ ] Practice: Transcription challenges
+- [ ] Audio integration
+- [ ] Sagittal sections
+
 #### Support my work!
 
 If you like Alphabetter and want to support me, shoot me an email for my Venmo or Zelle. My email is mikhael2 [at] illinois [dot] edu.
