@@ -51,7 +51,9 @@ struct SettingsView: View {
                 HStack {
                     Text("Alphabetter for macOS")
                     Spacer()
-                    Text("v1.0.0").foregroundColor(.secondary)
+                    // Replace the v1.0.0 Text with this:
+                    Text("v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0")")
+                        .foregroundColor(.secondary)
                 }
             }
         }
