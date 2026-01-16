@@ -4,11 +4,11 @@
         <title>Alphabetter</title>
         <item>
             <title>1.0.0</title>
-            <pubDate>Fri, 16 Jan 2026 10:11:28 -0600</pubDate>
+            <pubDate>Fri, 16 Jan 2026 10:50:12 -0600</pubDate>
             <sparkle:version>1</sparkle:version>
             <sparkle:shortVersionString>1.0.0</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>14.6</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/mikhael2/alphabetter-mac/releases/download/v1.0.0/Alphabetter.zip" length="4847234" type="application/octet-stream" sparkle:edSignature="vfQtZhz9JX5CapVLpSy9c4FX0ZQoB3N69fMpC5twkw/lfmc350c0ac/y5k8Ib3e8TAwhmAOhw66OkYHQ8DewAg=="/>
+            <enclosure url="https://raw.githubusercontent.com/mikhael2/alphabetter-mac/main/Alphabetter.zip" length="4878262" type="application/octet-stream" sparkle:edSignature="vUdSwLeq11UrOJ17IRJ6d6ZikGyP7gD7evD/7eushWvhHGmWOxRVegVQYbqVDbgwztrF5jlXYadi1ceSEK0yAg=="/>
         </item>
     </channel>
 </rss>
