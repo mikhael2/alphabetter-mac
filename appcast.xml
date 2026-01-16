@@ -1,0 +1,14 @@
+<?xml version="1.0" standalone="yes"?>
+<rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
+    <channel>
+        <title>Alphabetter</title>
+        <item>
+            <title>1.0.0</title>
+            <pubDate>Fri, 16 Jan 2026 10:11:28 -0600</pubDate>
+            <sparkle:version>1</sparkle:version>
+            <sparkle:shortVersionString>1.0.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.6</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/mikhael2/alphabetter-mac/releases/download/v1.0.0/Alphabetter.zip" length="4847234" type="application/octet-stream" sparkle:edSignature="vfQtZhz9JX5CapVLpSy9c4FX0ZQoB3N69fMpC5twkw/lfmc350c0ac/y5k8Ib3e8TAwhmAOhw66OkYHQ8DewAg=="/>
+        </item>
+    </channel>
+</rss>
