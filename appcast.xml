@@ -8,7 +8,7 @@
             <sparkle:version>1</sparkle:version>
             <sparkle:shortVersionString>1.0.1</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>14.6</sparkle:minimumSystemVersion>
-            <enclosure url="https://mikhael2.github.io/alphabetter-mac/Alphabetter.zip" length="4880688" type="application/octet-stream" sparkle:edSignature="8Ylny9ohgQQFE7SUb1c4Mpys6pDtsonAfD/V3pxRYcFf1bI9czYZblrQHxaKDb+cn+Y6R1hUup1qoOTtpuR1CQ=="/>
+            <enclosure url="https://raw.githubusercontent.com/mikhael2/alphabetter-mac/main/Alphabetter.zip" length="4880821" type="application/octet-stream" sparkle:edSignature="V8ic0Et7WZ/PLRnZdel4tFLiOgEQG7z1L8Vi3QqtOkZ37DYXrudkCyN7DAKUnFF9O1IQq9wuFo4a6p1mYV/HBg=="/>
         </item>
     </channel>
 </rss>
