@@ -71,13 +71,25 @@ struct SettingsView: View {
 class AppDelegate: NSObject, NSApplicationDelegate {
     var statusBarItem: NSStatusItem!
     var paletteWindow: NSWindow?
+    var settingsWindow: NSWindow?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        let shouldHide = UserDefaults.standard.bool(forKey: "hideDockIcon")
-        NSApp.setActivationPolicy(shouldHide ? .accessory : .regular)
-        setupStatusBar()
-        EventTapManager.shared.start()
-    }
+            // 1. Handle Dock Icon Logic
+            let shouldHide = UserDefaults.standard.bool(forKey: "hideDockIcon")
+            NSApp.setActivationPolicy(shouldHide ? .accessory : .regular)
+            
+            // 2. Setup Menu Bar
+            setupStatusBar()
+            
+            // 3. --- THIS IS THE MISSING PIECE ---
+            // Connect the "Right Option + Space" trigger to your openPalette function
+            EventTapManager.shared.onTogglePalette = { [weak self] in
+                self?.openPalette()
+            }
+            
+            // 4. Start Listening
+            EventTapManager.shared.start()
+        }
 
     private func setupStatusBar() {
         statusBarItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
@@ -150,15 +162,65 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         statusBarItem.menu = menu
     }
 
-    @objc func openSettings() {
-        NSApp.activate(ignoringOtherApps: true)
-        NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
-    }
+    // Add this variable at the top of your AppDelegate class if it's missing
+    
+
+        @objc func openSettings() {
+            NSApp.activate(ignoringOtherApps: true)
+
+            if let window = settingsWindow {
+                window.makeKeyAndOrderFront(nil)
+                return
+            }
+
+            let window = NSWindow(
+                contentRect: NSRect(x: 0, y: 0, width: 350, height: 300),
+                styleMask: [.titled, .closable, .miniaturizable],
+                backing: .buffered,
+                defer: false
+            )
+            
+            window.center()
+            window.title = "Settings"
+            window.isReleasedWhenClosed = false
+            window.contentView = NSHostingView(rootView: SettingsView())
+
+            window.makeKeyAndOrderFront(nil)
+            self.settingsWindow = window
+        }
 
     @objc func openPalette() {
-        // ... (existing palette code) ...
-    }
+            // 1. Force the app to wake up and come to the front
+            NSApp.activate(ignoringOtherApps: true)
 
+            // 2. If the window is already open, just bring it to the front
+            if let window = paletteWindow {
+                window.makeKeyAndOrderFront(nil)
+                return
+            }
+
+            // 3. Create the floating panel
+            let window = NSPanel(
+                contentRect: NSRect(x: 0, y: 0, width: 400, height: 500), // Height 500 fits the charts better
+                styleMask: [.titled, .closable, .nonactivatingPanel, .resizable],
+                backing: .buffered,
+                defer: false
+            )
+            
+            // 4. Configure: Make it float above everything (Level 9)
+            window.level = .floating
+            window.isReleasedWhenClosed = false
+            window.title = "IPA Palette"
+            window.center()
+
+            // 5. Connect your View
+            // This connects to your PaletteView.swift file
+            window.contentView = NSHostingView(rootView: PaletteView())
+
+            // 6. Launch it
+            window.makeKeyAndOrderFront(nil)
+            self.paletteWindow = window
+        }
     @objc func insertFromMenu(_ sender: NSMenuItem) {
         if let char = sender.representedObject as? String {
             EventTapManager.shared.insertFromMenu(char)
