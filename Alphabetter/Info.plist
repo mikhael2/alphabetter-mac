@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>SUFeedURL</key>
-	<string>https://mikhael2.github.io/alphabetter-mac/appcast.xml</string>
+	<string>https://raw.githubusercontent.com/mikhael2/alphabetter-mac/main/appcast.xml</string>
 	<key>SUPublicEDKey</key>
 	<string>O7pJ9+3BEThFs2i96ygTEgJHWH9TUHtZgxfHbUTlAbQ=</string>
 </dict>
