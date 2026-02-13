@@ -6,9 +6,9 @@
             <title>1.0.0</title>
             <pubDate>Fri, 16 Jan 2026 10:50:12 -0600</pubDate>
             <sparkle:version>1</sparkle:version>
-            <sparkle:shortVersionString>1.0.0</sparkle:shortVersionString>
+            <sparkle:shortVersionString>1.0.1</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>14.6</sparkle:minimumSystemVersion>
-            <enclosure url="https://raw.githubusercontent.com/mikhael2/alphabetter-mac/main/Alphabetter.zip" length="4878262" type="application/octet-stream" sparkle:edSignature="vUdSwLeq11UrOJ17IRJ6d6ZikGyP7gD7evD/7eushWvhHGmWOxRVegVQYbqVDbgwztrF5jlXYadi1ceSEK0yAg=="/>
+            <enclosure url="https://mikhael2.github.io/alphabetter-mac/Alphabetter.zip" length="4880688" type="application/octet-stream" sparkle:edSignature="8Ylny9ohgQQFE7SUb1c4Mpys6pDtsonAfD/V3pxRYcFf1bI9czYZblrQHxaKDb+cn+Y6R1hUup1qoOTtpuR1CQ=="/>
         </item>
     </channel>
 </rss>
