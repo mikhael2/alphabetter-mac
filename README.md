@@ -40,11 +40,13 @@ Alphabetter needs Accessibility permission to read keystrokes and type IPA chara
 
 ### Updating
 
-Check for updates by clicking the menu bar icon (the little IPA bottle 🍾) → Settings → Check for updates.
+Alphabetter updates automatically. To check for a new version manually:
 
-1. Quit Alphabetter if it’s running.
-2. Download the new `Alphabetter.zip` from the **Releases** page.
-3. Drag the old `Alphabetter.app` in Applications to the trash; place the new app in the Applications folder. You may need to regrant accessibility permissions.
+1. Click the menu bar icon (the little IPA bottle 🍾).
+2. Select **Settings** → **Check for Updates**.
+3. Click **Install and Relaunch**.
+
+*(If automatic updates ever fail, you can manually download the latest version from the [Releases page](https://github.com/mikhael2/alphabetter-mac/releases) and replace the app in your Applications folder.)*
 
 ## Using Alphabetter
 Alphabetter lives in your menu bar and stays out of your way until you need it. The app relies on the Right Option key to trigger IPA input.
