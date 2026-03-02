@@ -127,10 +127,6 @@ Access the settings via the meu bar icon (or `Cmd` + `,` while the palette is op
 - [ ] Audio integration
 - [ ] Sagittal sections
 
-#### Support my work!
-
-If you like Alphabetter and want to support me, shoot me an email for my Venmo or Zelle. My email is mikhael2 [at] illinois [dot] edu.
-
 ## License & Copyright
 
 **App Logic & Code:**
