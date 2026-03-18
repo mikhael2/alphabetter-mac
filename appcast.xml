@@ -3,12 +3,12 @@
     <channel>
         <title>Alphabetter</title>
         <item>
-            <title>1.0.0</title>
-            <pubDate>Fri, 16 Jan 2026 10:50:12 -0600</pubDate>
-            <sparkle:version>1</sparkle:version>
-            <sparkle:shortVersionString>1.0.1</sparkle:shortVersionString>
+            <title>1.1.0</title>
+            <pubDate>Wed, 18 Mar 2026 10:48:40 -0500</pubDate>
+            <sparkle:version>2</sparkle:version>
+            <sparkle:shortVersionString>1.1.0</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>14.6</sparkle:minimumSystemVersion>
-            <enclosure url="https://raw.githubusercontent.com/mikhael2/alphabetter-mac/main/Alphabetter.zip" length="4880821" type="application/octet-stream" sparkle:edSignature="V8ic0Et7WZ/PLRnZdel4tFLiOgEQG7z1L8Vi3QqtOkZ37DYXrudkCyN7DAKUnFF9O1IQq9wuFo4a6p1mYV/HBg=="/>
+            <enclosure url="https://raw.githubusercontent.com/mikhael2/alphabetter-mac/main/Alphabetter.zip" length="5007258" type="application/octet-stream" sparkle:edSignature="0Dbby/GYLwO5IzTPhfGQTAwslwAqf8ND7Nymv/ps2NI1vfENCrqdzxY1rU4Mr0ePVYUUnyiTVptnk8SMs4arDw=="/>
         </item>
     </channel>
 </rss>
