@@ -11,13 +11,13 @@ struct VowelChartView: View {
                     Color.clear.frame(width: 80, height: 30)
                     ForEach(backnesses) { back in
                         Text(back.rawValue.capitalized).font(.caption).fontWeight(.bold)
-                            .frame(width: 60, height: 30).background(Color.blue.opacity(0.2))
+                            .frame(width: 60, height: 30).background(Color.brandAccent.opacity(0.15))
                     }
                 }
                 ForEach(heights) { height in
                     GridRow {
                         Text(height.rawValue.capitalized).font(.caption).fontWeight(.bold)
-                            .frame(width: 80, height: 40, alignment: .trailing).padding(.trailing, 5).background(Color.blue.opacity(0.2))
+                            .frame(width: 80, height: 40, alignment: .trailing).padding(.trailing, 5).background(Color.brandAccent.opacity(0.15))
                         ForEach(backnesses) { back in
                             let (unrounded, rounded) = symbols(for: height, backness: back)
                             HStack(spacing: 0) {
@@ -25,7 +25,7 @@ struct VowelChartView: View {
                                 if let s = rounded { IPAButton(symbol: s) } else { Color.clear }
                             }
                             .frame(width: 60, height: 40)
-                            .background((unrounded != nil || rounded != nil) ? Color(NSColor.controlBackgroundColor) : Color.gray.opacity(0.05))
+                            .background((unrounded != nil || rounded != nil) ? Color.clear : Color.primary.opacity(0.05))
                             .border(Color.gray.opacity(0.2))
                         }
                     }

@@ -30,7 +30,7 @@ class HoverState: ObservableObject {
 struct VisualEffectBlur: NSViewRepresentable {
     func makeNSView(context: Context) -> NSVisualEffectView {
         let view = NSVisualEffectView()
-        view.material = .hudWindow
+        view.material = .popover // macOS Tahoe-like liquid glass
         view.blendingMode = .behindWindow
         view.state = .active
         return view
@@ -40,29 +40,42 @@ struct VisualEffectBlur: NSViewRepresentable {
 
 // MARK: - Main View
 struct PaletteView: View {
-    @State private var selectedTab = 0
+    @AppStorage("lastSelectedTab") private var selectedTab = 0
     @StateObject var hoverState = HoverState()
-    let brandPurple = Color(red: 175/255, green: 104/255, blue: 239/255)
+    @AppStorage("appTheme") private var appTheme = 0 // 0: System, 1: Light, 2: Dark
+    @AppStorage("appAccentColor") private var appAccentColor = 0
     
     var body: some View {
         ZStack(alignment: .top) {
             VisualEffectBlur().edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 0) {
-                TabView(selection: $selectedTab) {
-                    SearchListView().tabItem { Label("Search", systemImage: "magnifyingglass") }.tag(0)
-                    ConsonantChartView().tabItem { Label("Consonants", systemImage: "mouth") }.tag(1)
-                    VowelChartView().tabItem { Label("Vowels", systemImage: "waveform.path.ecg") }.tag(2)
-                    DiacriticsView().tabItem { Label("Diacritics", systemImage: "text.format.superscript") }.tag(3)
+                HStack(spacing: 12) {
+                    TabButton(title: "Search", tab: 0, selectedTab: $selectedTab)
+                    TabButton(title: "Consonants", tab: 1, selectedTab: $selectedTab)
+                    TabButton(title: "Vowels", tab: 2, selectedTab: $selectedTab)
+                    TabButton(title: "Diacritics", tab: 3, selectedTab: $selectedTab)
+                    TabButton(title: "Settings", tab: 4, selectedTab: $selectedTab)
                 }
-                .padding(.top, 10)
+                .id("tabs_\(appAccentColor)_\(appTheme)")
+                .padding(.top, 15)
+                .padding(.bottom, 10)
+                
+                ZStack {
+                    if selectedTab == 0 { SearchListView() }
+                    else if selectedTab == 1 { ConsonantChartView() }
+                    else if selectedTab == 2 { VowelChartView() }
+                    else if selectedTab == 3 { DiacriticsView() }
+                    else if selectedTab == 4 { SettingsView() }
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
                 
                 HStack(alignment: .firstTextBaseline) {
                     if hoverState.isHovering {
                         Text(hoverState.info)
                             .font(.system(size: 14))
                             .fontWeight(.medium)
-                            .foregroundColor(.white.opacity(0.9))
+                            .foregroundColor(.primary.opacity(0.9)) // Dynamically adapt to light/dark
                     } else {
                         Text("Hover over a symbol for details")
                             .font(.system(size: 14))
@@ -72,32 +85,58 @@ struct PaletteView: View {
                     Text("[ˈæɫ.fəˌbɛ.ɾɚ]")
                         .font(.title3)
                         .fontWeight(.bold)
-                        .foregroundColor(brandPurple)
+                        .foregroundColor(Color.brandAccent)
+                        .id("logo_\(appAccentColor)_\(appTheme)")
                 }
                 .padding(.horizontal, 18)
                 .padding(.vertical, 12)
-                .background(Color.black.opacity(0.2))
+                .background(Color.primary.opacity(0.05)) // Softer footer area
             }
+            .id("palette_\(appTheme)") // Force overall view interior trait re-evaluation on theme switch
         }
-        .frame(minWidth: 550, minHeight: 450)
+        .frame(minWidth: 500, minHeight: 450)
+        .onAppear { updateAppearance(theme: appTheme) }
+        .onChange(of: appTheme) { _, newValue in updateAppearance(theme: newValue) }
         .environmentObject(hoverState)
-        .onReceive(NotificationCenter.default.publisher(for: NSWindow.didBecomeKeyNotification)) { _ in selectedTab = 0 }
-        .background(Button("Close") { NSApp.keyWindow?.close() }.keyboardShortcut(.cancelAction).opacity(0))
+        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("SwitchToSettingsTab"))) { _ in
+            selectedTab = 4
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("SwitchToSearchTab"))) { _ in
+            selectedTab = 0
+        }
+        .background(
+            ZStack {
+                Button("Close") { NSApp.keyWindow?.close() }.keyboardShortcut(.cancelAction)
+                Button("Settings") { selectedTab = 4 }.keyboardShortcut(",", modifiers: .command)
+                Button("Search") { NotificationCenter.default.post(name: NSNotification.Name("SwitchToSearchTab"), object: nil) }.keyboardShortcut("f", modifiers: .command)
+            }
+            .opacity(0)
+        )
+    }
+
+    private func updateAppearance(theme: Int) {
+        NSApp.appearance = theme == 1 ? NSAppearance(named: .aqua) : (theme == 2 ? NSAppearance(named: .darkAqua) : nil)
     }
 }
 
 // MARK: - Search View
 struct SearchListView: View {
     @State private var searchText = ""
-    @State private var showEnglishOnly = false
+    @AppStorage("selectedProfileId") private var selectedProfileId: String = "All"
     @FocusState private var isSearchFocused: Bool
     @ObservedObject var recents = RecentsManager.shared
     @EnvironmentObject var hoverState: HoverState
-    let purple = Color(red: 175/255, green: 104/255, blue: 239/255)
+    @EnvironmentObject var profileManager: ProfileManager
+    @AppStorage("appAccentColor") private var appAccentColor = 0
     
     var filteredSymbols: [IPASymbol] {
         var symbols = ipaDatabase
-        if showEnglishOnly { symbols = symbols.filter { englishIPA.contains($0.char) } }
+        if selectedProfileId == "English" {
+            symbols = symbols.filter { englishIPA.contains($0.char) }
+        } else if selectedProfileId != "All", let profile = profileManager.profiles.first(where: { $0.id.uuidString == selectedProfileId }) {
+            symbols = symbols.filter { profile.characters.contains($0.char) }
+        }
+        
         if !searchText.isEmpty {
             let query = searchText.lowercased()
             symbols = symbols.filter { $0.searchKeywords.contains { k in k.hasPrefix(query) } }
@@ -115,15 +154,31 @@ struct SearchListView: View {
                 }
                 .padding(8).background(Color.primary.opacity(0.1)).cornerRadius(8)
                 
-                Button(action: { withAnimation(.spring()) { showEnglishOnly.toggle() } }) {
-                    Text("ENG").font(.caption).fontWeight(.bold).padding(8)
-                        .background(showEnglishOnly ? purple : Color.primary.opacity(0.1))
-                        .foregroundColor(showEnglishOnly ? .white : .secondary).cornerRadius(8)
+                Menu {
+                    Button("All Symbols") { selectedProfileId = "All" }
+                    Button("English") { selectedProfileId = "English" }
+                    if !profileManager.profiles.isEmpty {
+                        Divider()
+                        ForEach(profileManager.profiles) { profile in
+                            Button(profile.name) { selectedProfileId = profile.id.uuidString }
+                        }
+                    }
+                } label: {
+                    HStack(spacing: 4) {
+                        Image(systemName: "line.3.horizontal.decrease.circle")
+                        Text(selectedProfileId == "All" ? "All" : (selectedProfileId == "English" ? "ENG" : profileManager.profiles.first(where: { $0.id.uuidString == selectedProfileId })?.name ?? "Filter"))
+                            .font(.caption).fontWeight(.bold).lineLimit(1)
+                    }
+                    .padding(8)
+                    .background(selectedProfileId == "All" ? Color.primary.opacity(0.1) : Color.brandAccent)
+                    .foregroundColor(selectedProfileId == "All" ? .primary : .white)
+                    .cornerRadius(8)
                 }
-                .buttonStyle(PlainButtonStyle()).help("Show English Phonemes Only")
+                .menuStyle(BorderlessButtonMenuStyle(showsMenuIndicator: false))
+                .fixedSize()
             }
             .padding(10).padding(.top, 10)
-            
+           
             // Recents Section
             if !recents.recents.isEmpty && searchText.isEmpty {
                 VStack(spacing: 5) {
@@ -134,7 +189,7 @@ struct SearchListView: View {
                                 .frame(width: 40, height: 40)
                                 .background(Color.primary.opacity(0.1))
                                 .cornerRadius(8)
-                                .overlay(RoundedRectangle(cornerRadius: 8).stroke(purple.opacity(0.4), lineWidth: 1))
+                                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.brandAccent.opacity(0.4), lineWidth: 1))
                         }
                     }.padding(.horizontal, 8).padding(.bottom, 5)
                 }
@@ -152,7 +207,13 @@ struct SearchListView: View {
                 if filteredSymbols.isEmpty { Spacer(); Text("No symbols found").foregroundColor(.secondary); Spacer() }
             }
         }
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { isSearchFocused = true }
+        }
         .onReceive(NotificationCenter.default.publisher(for: NSWindow.didBecomeKeyNotification)) { _ in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { isSearchFocused = true }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("SwitchToSearchTab"))) { _ in
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { isSearchFocused = true }
         }
     }
@@ -162,9 +223,9 @@ struct SearchListView: View {
 struct SearchResultCard: View {
     let symbol: IPASymbol
     @EnvironmentObject var hoverState: HoverState
+    @EnvironmentObject var profileManager: ProfileManager
     @State private var isHovering = false
-    
-    let purple = Color(red: 175/255, green: 104/255, blue: 239/255)
+    @AppStorage("appAccentColor") private var appAccentColor = 0
     
     var body: some View {
         Button(action: {
@@ -173,21 +234,21 @@ struct SearchResultCard: View {
         }) {
             VStack {
                 Text(symbol.type == .diacritic ? "◌" + symbol.char : symbol.char)
-                    .font(.system(size: 24, weight: .regular, design: .serif))
-                    .foregroundColor(isHovering ? purple : .primary)
+                    .font(.system(size: 24, weight: .regular, design: .default))
+                    .foregroundColor(isHovering ? Color.brandAccent : .primary)
                     .scaleEffect(isHovering ? 1.2 : 1.0)
                     .frame(height: 30) // Fixed height for alignment
                 
                 Text(symbol.name)
                     .font(.caption2)
-                    .foregroundColor(isHovering ? purple : .secondary)
+                    .foregroundColor(isHovering ? Color.brandAccent : .secondary)
                     .lineLimit(1)
                     .truncationMode(.tail)
             }
             .padding(8)
             .frame(maxWidth: .infinity)
-            .background(Color.primary.opacity(isHovering ? 0.1 : 0.05))
-            .cornerRadius(8)
+            .background(Color.primary.opacity(isHovering ? 0.15 : 0.05))
+            .cornerRadius(12) // Smoother rounding
             .contentShape(Rectangle())
         }
         .buttonStyle(PlainButtonStyle())
@@ -197,5 +258,61 @@ struct SearchResultCard: View {
             if hovering { hoverState.info = symbol.tooltipInfo }
         }
         .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isHovering)
+        .contextMenu {
+            if let features = symbol.features {
+                VStack(alignment: .leading) {
+                    Text("Phonological Features").font(.headline)
+                    ForEach(features.activeFeatures, id: \.name) { feat in
+                        Text("\(feat.value == .plus ? "+" : "-")\(feat.name)")
+                    }
+                }
+            } else {
+                Text("No feature data available")
+            }
+            
+            Divider()
+            
+            Menu("Add to Profile...") {
+                if profileManager.profiles.isEmpty {
+                    Text("No profiles found")
+                } else {
+                    ForEach(profileManager.profiles) { profile in
+                        Button(action: {
+                            profileManager.toggleSymbol(char: symbol.char, in: profile.id)
+                        }) {
+                            HStack {
+                                Text(profile.name)
+                                if profile.characters.contains(symbol.char) {
+                                    Image(systemName: "checkmark")
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+}
+
+// MARK: - Components
+struct TabButton: View {
+    let title: String
+    let tab: Int
+    @Binding var selectedTab: Int
+    @AppStorage("appAccentColor") private var appAccentColor = 0
+    
+    var isSelected: Bool { selectedTab == tab }
+    
+    var body: some View {
+        Button(action: { withAnimation(.easeInOut(duration: 0.15)) { selectedTab = tab } }) {
+            Text(title).fontWeight(.semibold).font(.system(size: 13))
+            .padding(.vertical, 8)
+            .padding(.horizontal, 16)
+            .background(isSelected ? Color.brandAccent.opacity(0.85) : Color.primary.opacity(0.05))
+            .foregroundColor(isSelected ? .white : .primary)
+            .cornerRadius(16)
+        }
+        .buttonStyle(PlainButtonStyle())
     }
 }

@@ -9,3 +9,12 @@ xcuserdata/
 DerivedData/
 build/
 *.os_activity_dt_mode
+
+# Sparkle Binaries
+bin/
+
+# Editor Workspace Files
+*.code-workspace
+
+# Utility Scripts
+inspect_image.swift

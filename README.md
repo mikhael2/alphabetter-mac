@@ -1,6 +1,8 @@
 # Alphabetter for macOS
 ˈæɫ.fəˌbɛ.ɾɚ ɪz æn æp fɔɹ using the International Phonetic Alphabet. The IPA is accessible via key cycling and a palette. And yes, I actually typed that first bit using my app, and you can too!
 
+![Version](https://img.shields.io/badge/version-1.1.0-blue) ![Platform](https://img.shields.io/badge/platform-macOS%2014.6%2B-lightgrey)
+
 <img src="Screenshots/screenshot3.png" width="300" alt="Alphabetter app icon">
 
 
@@ -66,16 +68,49 @@ Example:
 
 You can also type common diacritics using `Right Option` + `Shift` + a key. For example, to type an aspirated `pʰ`, you would type `p` then `Right Option` + `Shift` + `h`.
 
-### 2. Special Shortcuts
+### 2. Keyboard Shortcuts
 
-For speed, some common symbols have dedicated overrides or special cycling rules:
+Alphabetter includes the following types of keybind cycles:
 
-| Shortcut (Hold Rt Option) | Result | Notes |
+#### Primary (`Right Option` + Key) — cycles through IPA variants
+
+| Shortcut | Cycles through |
+| :--- | :--- |
+| **⌥ N** | ŋ → ɲ → ɳ → ɴ |
+| **⌥ S** | ʃ → ʂ |
+| **⌥ T** | θ → ʈ → t͡ʃ → t͡s |
+| **⌥ D** | ð → ɖ → ɗ → d͡ʒ |
+| **⌥ F** | ͡ (tie bar) → ͜ → ‿ (linking) |
+| **⌥ Q** | ˈ (primary stress) → ˌ (secondary) |
+| **⌥ ;** | ː (long) → ˑ (half-long) |
+| **⌥ ,** | ̜ (less rounded) → ̹ (more rounded) |
+| **⌥ .** | ̆ (extra-short) → ̈ (centralized) |
+| **⌥ 2** | ʔ → ʕ → ʡ → ʢ |
+| **⌥ 3** | ɛ → ɜ → ɝ → ẽ → ɞ |
+
+*… and many more. Hover over any symbol in the Diacritics or Charts tabs to see its exact shortcut.*
+
+#### Secondary (`Shift + Right Option` + Key) — diacritics
+
+Secondary shortcuts **also cycle** — press the same combination again to advance:
+
+| Shortcut | Cycles through | Meaning |
 | :--- | :--- | :--- |
-| **Opt + F** | **͡** | Tie bar / Ligature (helpful for affricates) |
-| **Opt + Q** | **ˈ** / **ˌ** | Cycles between Primary and Secondary stress |
-| **Opt + Semicolon (;)** | **ː** | Length mark |
-| **Opt + Period (.)** | **◌̆** | Breve (for short vowels) |
+| **⇧⌥ H** | ʰ → ʱ | Aspirated → Breathy-asp. |
+| **⇧⌥ F** | ː → ˘ → ˑ | Long → Extra-short → Half-long |
+| **⇧⌥ L** | ̚ → ˡ | No aud. release → Lateral release |
+| **⇧⌥ D** | ̪ → ̺ → ̻ | Dental → Apical → Laminal |
+| **⇧⌥ S** | ̃ → ̴ → ̰ | Nasalized → Velarized → Creaky |
+| **⇧⌥ Z** | ̟ → ̠ | Advanced → Retracted |
+| **⇧⌥ K** | ̝ → ̞ | Raised → Lowered |
+| **⇧⌥ A** | ̘ → ̙ | Adv. Tongue Root → Ret. Tongue Root |
+| **⇧⌥ O** | ̥ → ˚ | Voiceless |
+| **⇧⌥ J / W / Y / P** | ʲ / ʷ / ˠ / ˤ | Palatalized / Labialized / Velarized / Pharyngealized |
+| **⇧⌥ B** | ̼ | Linguolabial |
+| **⇧⌥ G** | ̽ | Mid-centralized |
+| **⇧⌥ 1–0** | ̏ ̀ ̄ ́ ̋ ̌ ̂ … | Tone diacritics |
+
+*Full reference visible by hovering any button in the **Diacritics** tab.*
 
 ### 3. The Visual Palette
 
@@ -89,13 +124,13 @@ If you can't remember a shortcut or need to search by name, open the palette.
 
 <img src="Screenshots/screenshot1.png" width="400" alt="Alphabetter tooltips">
 
-- **Search**: Type to filter by feature or name. You can also filter out the noise and just show results for English symbols by clicking `ENG` next to the search bar.
+- **Search**: Type to filter by name or phonological features. Use the **profile picker** next to the search bar to filter results to a custom character set (e.g. just English sounds). Create and edit profiles in Settings.
 
 - **Insert**: Click any symbol to type it into your active document.
 
 - **Recents**: The top bar tracks your most recently used symbols for quick access.
 
-- **Tables**: There are also tabs containing tables of IPA symbols in more familiar layouts. Clicking on the symbols in these tables will insert them in your document just like from the search palette.
+- **Tabs**: Consonants, Vowels, and Diacritics tabs contain interactive IPA charts. The window remembers your last-used tab between sessions.
 
 
 <img src="Screenshots/screenshot2.png" width="700" alt="Alphabetter table">
@@ -110,18 +145,20 @@ Click the Alphabetter menu bar icon (the little IPA bottle 🍾) in your macOS m
 
 ### 5. Settings
 
-Access the settings via the meu bar icon (or `Cmd` + `,` while the palette is open).
-- Global Shortcut: Change the key used to toggle the visual palette (default is `Spacebar`).
-- Check for Updates: Click to check the GitHub for new versions of the app.
-- Hide Dock Icon: Check this box to make Alphabetter run exclusively in the menu bar.
+Access via the menu bar icon or `Cmd` + `,` while the palette is open.
+
+- **Global Shortcut**: Change the key used to toggle the visual palette (default: `Right Option + Space`).
+- **Custom Profiles**: Create named subsets of IPA characters. Right-click any symbol anywhere to add it to a profile. Switch profiles in the Search tab.
+- **Appearance**: Choose accent color and light/dark/system theme.
+- **Check for Updates**: Checks GitHub for new app versions (or updates install automatically in the background).
+- **Hide Dock Icon**: Run Alphabetter exclusively in the menu bar.
 
 ## 🗺️ Roadmap
 
 - [x] Key cycling logic
 - [x] GUI: Palette view and clickable IPA charts
-- [ ] Themes!
-- [ ] Customizable filters/profiles (currently just static ENG)
-- [ ] Favorites list
+- [x] Themes (accent color + dark/light mode)
+- [x] Customizable filters/profiles
 - [ ] Practice: Rapid identification
 - [ ] Practice: Transcription challenges
 - [ ] Audio integration
@@ -136,5 +173,5 @@ The source code and software design of this application are proprietary. You may
 **IPA Data & Charts:**
 This app includes reproductions of the International Phonetic Alphabet (IPA). The IPA chart and data remain under the Creative Commons Attribution-Sharealike 3.0 Unported License (CC-BY-SA).
 
-*Attribution:*
+
 "IPA Chart, http://www.internationalphoneticassociation.org/content/ipa-chart, available under a Creative Commons Attribution-Sharealike 3.0 Unported License. Copyright © 2015 International Phonetic Association."

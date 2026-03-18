@@ -31,16 +31,16 @@ struct ConsonantChartView: View {
             Text("Pulmonic Consonants").font(.headline)
             Grid(horizontalSpacing: 1, verticalSpacing: 1) {
                 GridRow {
-                    Color.clear.frame(width: 100, height: 30)
+                    Color.clear.frame(width: 65, height: 30) // Reduced from 100
                     ForEach(places) { place in
-                        Text(place.rawValue.capitalized).font(.caption).fontWeight(.bold)
-                            .frame(width: 60, height: 30).background(Color.green.opacity(0.2))
+                        Text(place.abbreviation).font(.system(size: 10, weight: .bold))
+                            .frame(width: 55, height: 30).background(Color.brandAccent.opacity(0.15))
                     }
                 }
                 ForEach(manners) { manner in
                     GridRow {
-                        Text(manner.rawValue.capitalized).font(.caption).fontWeight(.bold)
-                            .frame(width: 100, height: 40, alignment: .leading).padding(.leading, 5).background(Color.green.opacity(0.2))
+                        Text(manner.abbreviation).font(.system(size: 10, weight: .bold))
+                            .frame(width: 65, height: 40, alignment: .leading).padding(.leading, 5).background(Color.brandAccent.opacity(0.15))
                         ForEach(places) { place in cell(manner: manner, place: place) }
                     }
                 }
@@ -55,8 +55,8 @@ struct ConsonantChartView: View {
             if let s = voiceless { IPAButton(symbol: s) } else { Color.clear }
             if let s = voiced { IPAButton(symbol: s) } else { Color.clear }
         }
-        .frame(width: 60, height: 40)
-        .background(impossible ? Color.gray.opacity(0.3) : Color(NSColor.controlBackgroundColor))
+        .frame(width: 55, height: 40)
+        .background(impossible ? Color.primary.opacity(0.1) : Color.clear)
         .border(Color.gray.opacity(0.2))
     }
     
@@ -142,8 +142,9 @@ struct SymbolRow: View {
     var btnWidth: CGFloat = 40
     
     @EnvironmentObject var hoverState: HoverState
+    @EnvironmentObject var profileManager: ProfileManager
     @State private var isHovering = false
-    let purple = Color(red: 175/255, green: 104/255, blue: 239/255)
+    @AppStorage("appAccentColor") private var appAccentColor = 0
     
     var body: some View {
         if let sym = ipaDatabase.first(where: { $0.char == char }) {
@@ -155,29 +156,62 @@ struct SymbolRow: View {
                     // Symbol (Left)
                     Text(sym.char)
                         .font(.system(size: 24, weight: .regular, design: .serif))
-                        .foregroundColor(isHovering ? purple : .primary)
+                        .foregroundColor(isHovering ? Color.brandAccent : .primary)
                         .scaleEffect(isHovering ? 1.2 : 1.0)
                         .frame(width: btnWidth, height: 35)
-                        .background(Color(NSColor.controlBackgroundColor))
+                        .background(Color.clear)
                         .contentShape(Rectangle())
                     
                     // Description (Right)
                     Text(sym.tags)
                         .font(.caption)
-                        .foregroundColor(isHovering ? purple : .primary)
+                        .foregroundColor(isHovering ? Color.brandAccent : .primary)
                         .padding(.leading, 5)
                         .frame(width: width, alignment: .leading)
                         .frame(height: 35)
-                        .background(Color(NSColor.controlBackgroundColor))
+                        .background(Color.clear)
                         .contentShape(Rectangle())
                 }
-                .background(Color(NSColor.controlBackgroundColor).opacity(isHovering ? 0.6 : 1.0))
+                .background(Color.primary.opacity(isHovering ? 0.1 : 0.05))
             }
             .buttonStyle(PlainButtonStyle())
             .onHover { hovering in
                 isHovering = hovering
                 hoverState.isHovering = hovering
                 if hovering { hoverState.info = sym.tooltipInfo }
+            }
+            .contextMenu {
+                if let features = sym.features {
+                    VStack(alignment: .leading) {
+                        Text("Phonological Features").font(.headline)
+                        ForEach(features.activeFeatures, id: \.name) { feat in
+                            Text("\(feat.value == .plus ? "+" : "-")\(feat.name)")
+                        }
+                    }
+                } else {
+                    Text("No feature data available")
+                }
+                
+                Divider()
+                
+                Menu("Add to Profile...") {
+                    if profileManager.profiles.isEmpty {
+                        Text("No profiles found")
+                    } else {
+                        ForEach(profileManager.profiles) { profile in
+                            Button(action: {
+                                profileManager.toggleSymbol(char: sym.char, in: profile.id)
+                            }) {
+                                HStack {
+                                    Text(profile.name)
+                                    if profile.characters.contains(sym.char) {
+                                        Image(systemName: "checkmark")
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -187,8 +221,9 @@ struct SymbolRow: View {
 struct ClickableTableRow: View {
     let symbol: IPASymbol
     @EnvironmentObject var hoverState: HoverState
+    @EnvironmentObject var profileManager: ProfileManager
     @State private var isHovering = false
-    let purple = Color(red: 175/255, green: 104/255, blue: 239/255)
+    @AppStorage("appAccentColor") private var appAccentColor = 0
     
     var body: some View {
         Button(action: {
@@ -199,27 +234,60 @@ struct ClickableTableRow: View {
                 // Symbol (Left)
                 Text(symbol.char)
                     .font(.system(size: 24, weight: .regular, design: .serif))
-                    .foregroundColor(isHovering ? purple : .primary)
+                    .foregroundColor(isHovering ? Color.brandAccent : .primary)
                     .scaleEffect(isHovering ? 1.2 : 1.0)
                     .frame(width: 40, height: 40)
-                    .background(Color(NSColor.controlBackgroundColor))
+                    .background(Color.clear)
                 
                 // Description (Right)
                 Text(symbol.name.replacingOccurrences(of: "click", with: "").capitalized)
                     .font(.caption)
-                    .foregroundColor(isHovering ? purple : .primary)
+                    .foregroundColor(isHovering ? Color.brandAccent : .primary)
                     .padding(.leading, 5)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .frame(height: 40)
-                    .background(Color(NSColor.controlBackgroundColor))
+                    .background(Color.clear)
             }
-            .background(Color(NSColor.controlBackgroundColor).opacity(isHovering ? 0.6 : 1.0))
+            .background(Color.primary.opacity(isHovering ? 0.1 : 0.05))
         }
         .buttonStyle(PlainButtonStyle())
         .onHover { hovering in
             isHovering = hovering
             hoverState.isHovering = hovering
             if hovering { hoverState.info = symbol.tooltipInfo }
+        }
+        .contextMenu {
+            if let features = symbol.features {
+                VStack(alignment: .leading) {
+                    Text("Phonological Features").font(.headline)
+                    ForEach(features.activeFeatures, id: \.name) { feat in
+                        Text("\(feat.value == .plus ? "+" : "-")\(feat.name)")
+                    }
+                }
+            } else {
+                Text("No feature data available")
+            }
+            
+            Divider()
+            
+            Menu("Add to Profile...") {
+                if profileManager.profiles.isEmpty {
+                    Text("No profiles found")
+                } else {
+                    ForEach(profileManager.profiles) { profile in
+                        Button(action: {
+                            profileManager.toggleSymbol(char: symbol.char, in: profile.id)
+                        }) {
+                            HStack {
+                                Text(profile.name)
+                                if profile.characters.contains(symbol.char) {
+                                    Image(systemName: "checkmark")
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

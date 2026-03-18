@@ -16,6 +16,7 @@ struct KeyCodes {
     static let rightOption: Int64 = 61
     static let delete: Int64 = 51
     static let shift: Int64 = 56
+    static let comma: Int64 = 43
     static let period: Int64 = 47
     static let semicolon: Int64 = 41
     static let slash: Int64 = 44
@@ -33,6 +34,10 @@ class EventTapManager {
     var onTogglePalette: (() -> Void)?
     var triggerKey: Int64 = KeyCodes.space
     
+    var useRightOptionOnly: Bool = true
+    var customTriggerKeyCode: Int64 = KeyCodes.space
+    var customTriggerModifiers: UInt64 = 0
+    
     // Internal State
     private var isRightOptionDown = false
     private var isShiftDown = false
@@ -42,31 +47,63 @@ class EventTapManager {
     
     // Mappings
     private let ipaMappings: [Int64: [String]] = [
-        KeyCodes.period: ["\u{0306}"], KeyCodes.semicolon: ["ː", "ˑ"],
+        // Punctuation keys
+        KeyCodes.comma: ["\u{031C}", "\u{0339}"],   // ̜ less-rounded, ̹ more-rounded
+        KeyCodes.period: ["\u{0306}", "\u{0308}"],   // ̆ extra-short, ̈ centralized
+        KeyCodes.semicolon: ["ː", "ˑ"],              // length mark, half-long
+        // Letter mappings
         KeyCodes.a: ["ɑ", "æ", "ɐ", "ã"], KeyCodes.b: ["β", "ɓ", "ʙ"],
-        KeyCodes.c: ["ç", "ɕ"], KeyCodes.d: ["ð", "ɖ", "ɗ", "dʒ"],
-        KeyCodes.e: ["ə", "ɚ", "ɵ", "ɘ"], KeyCodes.g: ["ɡ", "ɢ", "ɠ", "ʛ"],
+        KeyCodes.c: ["ç", "ɕ"], KeyCodes.d: ["ð", "ɖ", "ɗ", "d͡ʒ"],
+        KeyCodes.e: ["ə", "ɚ", "ɵ", "ɘ"], KeyCodes.f: ["͡", "͜", "‿"],
+        KeyCodes.g: ["ɡ", "ɢ", "ɠ", "ʛ"],
         KeyCodes.h: ["ħ", "ɦ", "ɥ", "ɧ", "ʜ"], KeyCodes.i: ["ɪ", "ɨ", "ᵻ"],
         KeyCodes.j: ["ɟ", "ʄ"], KeyCodes.k: ["ǀ", "ǁ", "ǂ", "!", "ʘ"],
-        KeyCodes.l: ["ɫ", "ɭ", "ʎ", "ʟ"], KeyCodes.m: ["ɱ"],
+        KeyCodes.l: ["ɫ", "ɭ", "ɬ", "ʟ", "ɮ"], KeyCodes.m: ["ɱ"],
         KeyCodes.n: ["ŋ", "ɲ", "ɳ", "ɴ"], KeyCodes.o: ["ɔ", "ø", "œ", "ɶ"],
-        KeyCodes.q: ["ˈ", "ˌ"], KeyCodes.r: ["ɾ", "ɹ", "ʁ", "ʀ", "ɻ", "ɽ", "ɺ"],
-        KeyCodes.s: ["ʃ", "ʂ"], KeyCodes.t: ["θ", "ʈ", "tʃ", "ts"],
+        KeyCodes.p: ["ɸ"], KeyCodes.q: ["ˈ", "ˌ"], KeyCodes.r: ["ɾ", "ɹ", "ʁ", "ʀ", "ɻ", "ɽ", "ɺ"],
+        KeyCodes.s: ["ʃ", "ʂ"], KeyCodes.t: ["θ", "ʈ", "t͡ʃ", "t͡s"],
         KeyCodes.u: ["ʊ", "ʉ"], KeyCodes.v: ["ʌ", "ʋ"],
         KeyCodes.w: ["ɯ", "ʍ", "ɰ"], KeyCodes.x: ["χ"],
         KeyCodes.y: ["ɣ", "ʎ", "ʏ", "ɤ"], KeyCodes.z: ["ʒ", "ʐ", "ʑ"],
         KeyCodes.three: ["ɛ", "ɜ", "ɝ", "ẽ", "ɞ"], KeyCodes.two: ["ʔ", "ʕ", "ʡ", "ʢ"]
     ]
     
-    private let ipaShiftMappings: [Int64: String] = [
-        KeyCodes.one: "\u{030F}", KeyCodes.two: "\u{0300}", KeyCodes.three: "\u{0304}",
-        KeyCodes.four: "\u{0301}", KeyCodes.five: "\u{030B}", KeyCodes.six: "\u{030C}",
-        KeyCodes.seven: "\u{0302}", KeyCodes.eight: "\u{1DC4}", KeyCodes.nine: "\u{1DC5}",
-        KeyCodes.zero: "\u{1DC8}", KeyCodes.h: "ʰ", KeyCodes.j: "ʲ", KeyCodes.w: "ʷ",
-        KeyCodes.y: "ˠ", KeyCodes.n: "ⁿ", KeyCodes.l: "̚", KeyCodes.f: "\u{0329}",
-        KeyCodes.d: "\u{032A}", KeyCodes.o: "\u{0325}", KeyCodes.v: "\u{032C}",
-        KeyCodes.s: "\u{0303}", KeyCodes.r: "˞", KeyCodes.e: "\u{1D4A}",
-        KeyCodes.c: "\u{0327}", KeyCodes.t: "\u{0324}"
+    private let ipaShiftMappings: [Int64: [String]] = [
+        // Tone diacritics on number keys
+        KeyCodes.one: ["\u{030F}"], KeyCodes.two: ["\u{0300}"], KeyCodes.three: ["\u{0304}"],
+        KeyCodes.four: ["\u{0301}"], KeyCodes.five: ["\u{030B}"], KeyCodes.six: ["\u{030C}"],
+        KeyCodes.seven: ["\u{0302}"], KeyCodes.eight: ["\u{1DC4}"], KeyCodes.nine: ["\u{1DC5}"],
+        KeyCodes.zero: ["\u{1DC8}"],
+        // Punctuation row diacritics
+        KeyCodes.comma: ["\u{031C}", "\u{0339}"],    // ̜ less-rounded → ̹ more-rounded
+        KeyCodes.period: ["\u{0308}", "\u{0324}"],   // ̈ centralized → ̤ breathy voiced
+        KeyCodes.semicolon: ["\u{0329}"],             // ̩ syllabic
+        // Suprasegmentals on F
+        KeyCodes.f: ["ː", "˘", "ˑ"],
+        // Place of articulation
+        KeyCodes.d: ["\u{032A}", "\u{033A}", "\u{033B}"],  // dental → apical → laminal
+        KeyCodes.b: ["\u{033C}"],                           // linguolabial
+        // Manner/voice diacritics
+        KeyCodes.h: ["ʰ", "ʱ"],   // aspirated → breathy-asp.
+        KeyCodes.t: ["\u{0324}"],   // breathy voiced
+        KeyCodes.v: ["\u{032C}"],   // voiced
+        KeyCodes.s: ["\u{0303}", "\u{0334}", "\u{0330}"],  // nasalized → velarized → creaky
+        KeyCodes.o: ["\u{0325}", "˚"],  // voiceless → voiceless alt.
+        // Suprasegmental letter modifiers
+        KeyCodes.j: ["ʲ"],   // palatalized
+        KeyCodes.w: ["ʷ"],   // labialized
+        KeyCodes.y: ["ˠ"],   // velarized
+        KeyCodes.p: ["ˤ"],   // pharyngealized
+        KeyCodes.n: ["ⁿ"],   // nasal release
+        KeyCodes.l: ["\u{031A}", "ˡ"],  // no-audible-release → lateral release
+        KeyCodes.r: ["˞"],   // rhoticity
+        KeyCodes.e: ["\u{1D4A}"],  // extra-short
+        KeyCodes.c: ["\u{032F}", "\u{0311}"],  // non-syllabic
+        // Tongue body / height position
+        KeyCodes.a: ["\u{0318}", "\u{0319}"],  // Adv. Tongue Root → Ret. Tongue Root
+        KeyCodes.z: ["\u{031F}", "\u{0320}"],  // advanced → retracted
+        KeyCodes.k: ["\u{031D}", "\u{031E}"],  // raised → lowered
+        KeyCodes.g: ["\u{033D}"],               // mid-centralized
     ]
     
     var isEnabled: Bool = true {
@@ -113,22 +150,33 @@ class EventTapManager {
         if type == .keyDown {
             let keyCode = event.getIntegerValueField(.keyboardEventKeycode)
             
-            if manager.isRightOptionDown {
-                if keyCode == manager.triggerKey {
+            // Palette toggle check
+            if manager.useRightOptionOnly {
+                if manager.isRightOptionDown && keyCode == manager.triggerKey {
                     DispatchQueue.main.async { manager.onTogglePalette?() }
                     return nil
                 }
-                
-                if !manager.isShiftDown {
-                    switch keyCode {
-                    case KeyCodes.p: manager.activeKey = nil; manager.postIPAChar("ɸ"); return nil
-                    case KeyCodes.f: manager.activeKey = nil; manager.postIPAChar("͡"); return nil
-                    default: break
-                    }
+            } else {
+                let flagsMask = UInt64(CGEventFlags.maskShift.rawValue | CGEventFlags.maskControl.rawValue | CGEventFlags.maskAlternate.rawValue | CGEventFlags.maskCommand.rawValue)
+                let flags = event.flags.rawValue & flagsMask
+                let targetFlags = manager.customTriggerModifiers & flagsMask
+                if flags == targetFlags && keyCode == manager.customTriggerKeyCode {
+                    DispatchQueue.main.async { manager.onTogglePalette?() }
+                    return nil
                 }
-                
-                if manager.isShiftDown, let symbol = manager.ipaShiftMappings[keyCode] {
-                    manager.activeKey = nil; manager.postIPAChar(symbol); return nil
+            }
+            
+            if manager.isRightOptionDown {
+                if manager.isShiftDown, let symbols = manager.ipaShiftMappings[keyCode] {
+                    if manager.activeKey == keyCode {
+                        manager.postCleanBackspace()
+                        Thread.sleep(forTimeInterval: 0.001)
+                        manager.cycleIndex = (manager.cycleIndex + 1) % symbols.count
+                    } else {
+                        manager.activeKey = keyCode; manager.cycleIndex = 0
+                    }
+                    manager.postIPAChar(symbols[manager.cycleIndex])
+                    return nil
                 } else if !manager.isShiftDown, let symbols = manager.ipaMappings[keyCode] {
                     if manager.activeKey == keyCode {
                         manager.postCleanBackspace()
@@ -180,8 +228,14 @@ class EventTapManager {
     // MARK: - Helper
     func findShortcut(for symbol: String) -> String? {
         if symbol == "ɸ" { return "⌥P" }
-        if symbol == "͡" { return "⌥F" }
-        if let (code, _) = ipaShiftMappings.first(where: { $0.value == symbol }) { return "⇧⌥" + keyName(for: code) }
+        
+        for (code, list) in ipaShiftMappings {
+            if let index = list.firstIndex(of: symbol) {
+                let key = keyName(for: code)
+                return index == 0 ? "⇧⌥\(key)" : "⇧⌥\(key) (×\(index + 1))"
+            }
+        }
+        
         for (code, list) in ipaMappings {
             if let index = list.firstIndex(of: symbol) {
                 let key = keyName(for: code)
@@ -198,7 +252,8 @@ class EventTapManager {
             KeyCodes.o: "O", KeyCodes.p: "P", KeyCodes.q: "Q", KeyCodes.r: "R", KeyCodes.s: "S", KeyCodes.t: "T", KeyCodes.u: "U",
             KeyCodes.v: "V", KeyCodes.w: "W", KeyCodes.x: "X", KeyCodes.y: "Y", KeyCodes.z: "Z", KeyCodes.one: "1", KeyCodes.two: "2",
             KeyCodes.three: "3", KeyCodes.four: "4", KeyCodes.five: "5", KeyCodes.six: "6", KeyCodes.seven: "7", KeyCodes.eight: "8",
-            KeyCodes.nine: "9", KeyCodes.zero: "0", KeyCodes.space: "Spc", KeyCodes.returnKey: "Ret", KeyCodes.slash: "?"
+            KeyCodes.nine: "9", KeyCodes.zero: "0", KeyCodes.space: "Spc", KeyCodes.returnKey: "Ret", KeyCodes.slash: "?",
+            KeyCodes.comma: ",", KeyCodes.period: ".", KeyCodes.semicolon: ";"
         ]
         return names[code] ?? "?"
     }
