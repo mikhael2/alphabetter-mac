@@ -98,17 +98,17 @@ struct PaletteView: View {
         .onAppear { updateAppearance(theme: appTheme) }
         .onChange(of: appTheme) { _, newValue in updateAppearance(theme: newValue) }
         .environmentObject(hoverState)
-        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("SwitchToSettingsTab"))) { _ in
+        .onReceive(NotificationCenter.default.publisher(for: .switchToSettingsTab)) { _ in
             selectedTab = 4
         }
-        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("SwitchToSearchTab"))) { _ in
+        .onReceive(NotificationCenter.default.publisher(for: .switchToSearchTab)) { _ in
             selectedTab = 0
         }
         .background(
             ZStack {
                 Button("Close") { NSApp.keyWindow?.close() }.keyboardShortcut(.cancelAction)
                 Button("Settings") { selectedTab = 4 }.keyboardShortcut(",", modifiers: .command)
-                Button("Search") { NotificationCenter.default.post(name: NSNotification.Name("SwitchToSearchTab"), object: nil) }.keyboardShortcut("f", modifiers: .command)
+                Button("Search") { NotificationCenter.default.post(name: .switchToSearchTab, object: nil) }.keyboardShortcut("f", modifiers: .command)
             }
             .opacity(0)
         )
@@ -213,7 +213,7 @@ struct SearchListView: View {
         .onReceive(NotificationCenter.default.publisher(for: NSWindow.didBecomeKeyNotification)) { _ in
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { isSearchFocused = true }
         }
-        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("SwitchToSearchTab"))) { _ in
+        .onReceive(NotificationCenter.default.publisher(for: .switchToSearchTab)) { _ in
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { isSearchFocused = true }
         }
     }
@@ -223,7 +223,6 @@ struct SearchListView: View {
 struct SearchResultCard: View {
     let symbol: IPASymbol
     @EnvironmentObject var hoverState: HoverState
-    @EnvironmentObject var profileManager: ProfileManager
     @State private var isHovering = false
     @AppStorage("appAccentColor") private var appAccentColor = 0
     
@@ -258,40 +257,7 @@ struct SearchResultCard: View {
             if hovering { hoverState.info = symbol.tooltipInfo }
         }
         .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isHovering)
-        .contextMenu {
-            if let features = symbol.features {
-                VStack(alignment: .leading) {
-                    Text("Phonological Features").font(.headline)
-                    ForEach(features.activeFeatures, id: \.name) { feat in
-                        Text("\(feat.value == .plus ? "+" : "-")\(feat.name)")
-                    }
-                }
-            } else {
-                Text("No feature data available")
-            }
-            
-            Divider()
-            
-            Menu("Add to Profile...") {
-                if profileManager.profiles.isEmpty {
-                    Text("No profiles found")
-                } else {
-                    ForEach(profileManager.profiles) { profile in
-                        Button(action: {
-                            profileManager.toggleSymbol(char: symbol.char, in: profile.id)
-                        }) {
-                            HStack {
-                                Text(profile.name)
-                                if profile.characters.contains(symbol.char) {
-                                    Image(systemName: "checkmark")
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
+        .ipaContextMenu(for: symbol)
     }
 }
 

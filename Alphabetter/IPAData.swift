@@ -240,7 +240,7 @@ let ipaDatabase: [IPASymbol] = [
     IPASymbol(char: "ɹ", name: "turned r", type: .consonant, tags: "approximant", consonantManner: .approximant, consonantPlace: .alveolar, consonantVoicing: .voiced, features: PhonologicalFeatures(consonantal: .plus, sonorant: .plus, continuant: .plus, voice: .plus, coronal: .plus, anterior: .plus)),
     IPASymbol(char: "ɻ", name: "retroflex approximant", type: .consonant, tags: "approximant", consonantManner: .approximant, consonantPlace: .retroflex, consonantVoicing: .voiced, features: PhonologicalFeatures(consonantal: .minus, sonorant: .plus, continuant: .plus, voice: .plus, coronal: .plus, anterior: .minus)),
     IPASymbol(char: "j", name: "lowercase j", type: .consonant, tags: "approximant y", consonantManner: .approximant, consonantPlace: .palatal, consonantVoicing: .voiced, features: PhonologicalFeatures(consonantal: .minus, sonorant: .plus, continuant: .plus, voice: .plus, coronal: .plus, dorsal: .plus, high: .plus, back: .minus)),
-    IPASymbol(char: "ɯ", name: "turned m", type: .consonant, tags: "approximant", consonantManner: .approximant, consonantPlace: .velar, consonantVoicing: .voiced, features: PhonologicalFeatures(syllabic: .plus, consonantal: .minus, sonorant: .plus, continuant: .plus, voice: .plus, round: .minus, dorsal: .plus, high: .plus, low: .minus, back: .plus, tense: .plus)),
+    IPASymbol(char: "ɰ", name: "turned m with long leg", type: .consonant, tags: "approximant velar", consonantManner: .approximant, consonantPlace: .velar, consonantVoicing: .voiced, features: PhonologicalFeatures(syllabic: .plus, consonantal: .minus, sonorant: .plus, continuant: .plus, voice: .plus, round: .minus, dorsal: .plus, high: .plus, low: .minus, back: .plus, tense: .plus)),
 
     IPASymbol(char: "l", name: "lowercase l", type: .consonant, tags: "lateral approximant", consonantManner: .lateralApproximant, consonantPlace: .alveolar, consonantVoicing: .voiced, features: PhonologicalFeatures(consonantal: .plus, sonorant: .plus, continuant: .plus, lateral: .plus, voice: .plus, coronal: .plus, anterior: .plus)),
     IPASymbol(char: "ɭ", name: "retroflex l", type: .consonant, tags: "lateral approximant", consonantManner: .lateralApproximant, consonantPlace: .retroflex, consonantVoicing: .voiced, features: PhonologicalFeatures(consonantal: .plus, sonorant: .plus, continuant: .plus, lateral: .plus, voice: .plus, coronal: .plus, anterior: .minus)),
@@ -468,8 +468,9 @@ class ProfileManager: ObservableObject {
             }
         }
         
-        // Handle common affricates and diacritics tied together, fallback: just check substring against database
-        for symbol in ipaDatabase {
+        // Only use substring matching for multi-codepoint symbols (e.g. affricates like t͡ʃ)
+        // to avoid single-char symbols falsely matching as substrings of longer ones.
+        for symbol in ipaDatabase where symbol.char.unicodeScalars.count > 1 {
             if string.contains(symbol.char) {
                 validChars.insert(symbol.char)
             }

@@ -27,7 +27,12 @@ struct KeyCodes {
 // MARK: - Event Tap Manager
 class EventTapManager {
     static let shared = EventTapManager()
-    
+    static let paletteShortcutKeys: [(String, Int64)] = [
+        ("Space", KeyCodes.space),
+        ("Return", KeyCodes.returnKey),
+        ("/ ?", KeyCodes.slash)
+    ]
+
     private var machPort: CFMachPort?
     private var runLoopSource: CFRunLoopSource?
     
@@ -169,23 +174,31 @@ class EventTapManager {
             if manager.isRightOptionDown {
                 if manager.isShiftDown, let symbols = manager.ipaShiftMappings[keyCode] {
                     if manager.activeKey == keyCode {
+                        let nextIndex = (manager.cycleIndex + 1) % symbols.count
+                        manager.cycleIndex = nextIndex
+                        let nextSymbol = symbols[nextIndex]
                         manager.postCleanBackspace()
-                        Thread.sleep(forTimeInterval: 0.001)
-                        manager.cycleIndex = (manager.cycleIndex + 1) % symbols.count
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.002) {
+                            manager.postIPAChar(nextSymbol)
+                        }
                     } else {
                         manager.activeKey = keyCode; manager.cycleIndex = 0
+                        manager.postIPAChar(symbols[0])
                     }
-                    manager.postIPAChar(symbols[manager.cycleIndex])
                     return nil
                 } else if !manager.isShiftDown, let symbols = manager.ipaMappings[keyCode] {
                     if manager.activeKey == keyCode {
+                        let nextIndex = (manager.cycleIndex + 1) % symbols.count
+                        manager.cycleIndex = nextIndex
+                        let nextSymbol = symbols[nextIndex]
                         manager.postCleanBackspace()
-                        Thread.sleep(forTimeInterval: 0.001)
-                        manager.cycleIndex = (manager.cycleIndex + 1) % symbols.count
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.002) {
+                            manager.postIPAChar(nextSymbol)
+                        }
                     } else {
                         manager.activeKey = keyCode; manager.cycleIndex = 0
+                        manager.postIPAChar(symbols[0])
                     }
-                    manager.postIPAChar(symbols[manager.cycleIndex])
                     return nil
                 }
             }

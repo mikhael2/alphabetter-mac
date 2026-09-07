@@ -1,8 +1,22 @@
 # Changelog
 
-All notable changes to Alphabetter are documented here.
+Notable changes to Alphabetter are documented here.
 
 ---
+
+## [1.1.1] — 2026-09-07 "Fall housekeeping"
+### Changed
+- Refactored codebase: SettingsView, ShortcutRecorder, and IPAContextMenu in separate files
+- Replaced duplicated context menu blocks with a shared `.ipaContextMenu()` modifier
+- Replaced raw `NSNotification.Name` string literals with typed notification name constants
+- Diacritics tab content now has a fixed max-width, consistent with other tabs
+- "Show Menu Bar Icon" toggle renamed to "Hide Menu Bar Icon" for consistency with "Hide Dock Icon"
+- Added "Restart" option to the menu bar menu
+### Fixed
+- Bug-fix for Sparkle framework
+- Corrected velar approximant IPA symbol from ɯ to ɰ
+- Fixed substring matching to only apply to multi-codepoint symbols (prevents false matches on affricates like t͡ʃ)
+
 
 ## [1.1.0] — 2026-03-17 "Saint Patrick's Day Update ☘️"
 

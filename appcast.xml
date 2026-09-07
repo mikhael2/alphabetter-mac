@@ -3,6 +3,15 @@
     <channel>
         <title>Alphabetter</title>
         <item>
+            <title>1.1.1</title>
+            <pubDate>Mon, 07 Sep 2026 03:24:52 -0500</pubDate>
+            <sparkle:version>3</sparkle:version>
+            <sparkle:shortVersionString>1.1.1</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.6</sparkle:minimumSystemVersion>
+            <sparkle:releaseNotesLink>https://raw.githubusercontent.com/mikhael2/alphabetter-mac/main/CHANGELOG.md</sparkle:releaseNotesLink>
+            <enclosure url="https://raw.githubusercontent.com/mikhael2/alphabetter-mac/main/Alphabetter.zip" length="5084525" type="application/octet-stream" sparkle:edSignature="Cd6kFQp2OamZ6E++xiBa4F+6TR/DRQbpX1RyzCXVBVnB/YWn1nOkV/7Xi+yqiAMBPiOsN5A0V9uwDnbu9TguAQ=="/>
+        </item>
+        <item>
             <title>1.1.0</title>
             <pubDate>Wed, 18 Mar 2026 10:48:40 -0500</pubDate>
             <sparkle:version>2</sparkle:version>
@@ -16,7 +25,6 @@
             <pubDate>Fri, 16 Jan 2026 10:50:12 -0600</pubDate>
             <sparkle:version>1</sparkle:version>
             <sparkle:shortVersionString>1.0.1</sparkle:shortVersionString>
->>>>>>> a18112c (Add keybind guide, changelog, and phonological features PDF; clean up repo)
             <sparkle:minimumSystemVersion>14.6</sparkle:minimumSystemVersion>
             <enclosure url="https://raw.githubusercontent.com/mikhael2/alphabetter-mac/main/Alphabetter.zip" length="5007258" type="application/octet-stream" sparkle:edSignature="0Dbby/GYLwO5IzTPhfGQTAwslwAqf8ND7Nymv/ps2NI1vfENCrqdzxY1rU4Mr0ePVYUUnyiTVptnk8SMs4arDw=="/>
         </item>

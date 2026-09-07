@@ -92,7 +92,10 @@ struct DiacriticsView: View {
                     .border(Color.gray.opacity(0.2))
                     
                 }.padding(.horizontal)
-            }.padding(.vertical)
+            }
+            .padding(.vertical)
+            .frame(maxWidth: 500)
+            .frame(maxWidth: .infinity)
         }
     }
     
@@ -132,7 +135,6 @@ struct DiacriticRowButton: View {
     let symbol: IPASymbol
     
     @EnvironmentObject var hoverState: HoverState
-    @EnvironmentObject var profileManager: ProfileManager
     @State private var isHovering = false
     @AppStorage("appAccentColor") private var appAccentColor = 0
     
@@ -179,39 +181,7 @@ struct DiacriticRowButton: View {
             hoverState.isHovering = hovering
             if hovering { hoverState.info = symbol.tooltipInfo }
         }
-        .contextMenu {
-            if let features = symbol.features {
-                VStack(alignment: .leading) {
-                    Text("Phonological Features").font(.headline)
-                    ForEach(features.activeFeatures, id: \.name) { feat in
-                        Text("\(feat.value == .plus ? "+" : "-")\(feat.name)")
-                    }
-                }
-            } else {
-                Text("No feature data available")
-            }
-            
-            Divider()
-            
-            Menu("Add to Profile...") {
-                if profileManager.profiles.isEmpty {
-                    Text("No profiles found")
-                } else {
-                    ForEach(profileManager.profiles) { profile in
-                        Button(action: {
-                            profileManager.toggleSymbol(char: symbol.char, in: profile.id)
-                        }) {
-                            HStack {
-                                Text(profile.name)
-                                if profile.characters.contains(symbol.char) {
-                                    Image(systemName: "checkmark")
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        .ipaContextMenu(for: symbol)
     }
 }
 
