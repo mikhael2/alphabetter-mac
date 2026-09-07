@@ -1,10 +1,11 @@
 import SwiftUI
-import Sparkle
 import ServiceManagement
 
 // MARK: - Settings View
 struct SettingsView: View {
-    private let updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
+    @State private var updateStatus: UpdateStatus = .idle
+    @State private var latestVersion: String = ""
+    private enum UpdateStatus { case idle, checking, upToDate, available, error }
 
     @AppStorage("hideDockIcon") private var hideDockIcon = false
     @AppStorage("showMenuBarIcon") private var showMenuBarIcon = true
@@ -53,8 +54,31 @@ struct SettingsView: View {
                 }
 
                 Section(header: Text("Updates")) {
-                    Button("Check for Updates...") {
-                        updaterController.updater.checkForUpdates()
+                    HStack {
+                        Button(action: checkForUpdates) {
+                            Text(updateStatus == .checking ? "Checking..." : "Check for Updates")
+                        }
+                        .disabled(updateStatus == .checking)
+
+                        Spacer()
+
+                        switch updateStatus {
+                        case .upToDate:
+                            Label("Up to date", systemImage: "checkmark.circle.fill")
+                                .foregroundColor(.green).font(.caption)
+                        case .available:
+                            Button(action: openReleasesPage) {
+                                Label("v\(latestVersion) available — Download", systemImage: "arrow.down.circle.fill")
+                                    .font(.caption)
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                            .foregroundColor(Color.brandAccent)
+                        case .error:
+                            Label("Check failed", systemImage: "exclamationmark.triangle")
+                                .foregroundColor(.orange).font(.caption)
+                        default:
+                            EmptyView()
+                        }
                     }
                 }
 
@@ -164,6 +188,34 @@ struct SettingsView: View {
         }
         manager.customTriggerKeyCode = Int64(customTriggerKeyCode)
         manager.customTriggerModifiers = UInt64(customTriggerModifiers)
+    }
+
+    private func checkForUpdates() {
+        updateStatus = .checking
+        let url = URL(string: "https://raw.githubusercontent.com/mikhael2/alphabetter-mac/main/appcast.xml")!
+        URLSession.shared.dataTask(with: url) { data, _, _ in
+            DispatchQueue.main.async {
+                guard let data,
+                      let xml = String(data: data, encoding: .utf8),
+                      let start = xml.range(of: "<sparkle:shortVersionString>"),
+                      let end = xml.range(of: "</sparkle:shortVersionString>") else {
+                    updateStatus = .error
+                    return
+                }
+                let latest = String(xml[start.upperBound..<end.lowerBound])
+                let current = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0"
+                if latest == current {
+                    updateStatus = .upToDate
+                } else {
+                    latestVersion = latest
+                    updateStatus = .available
+                }
+            }
+        }.resume()
+    }
+
+    private func openReleasesPage() {
+        NSWorkspace.shared.open(URL(string: "https://github.com/mikhael2/alphabetter-mac/releases/latest")!)
     }
 }
 

@@ -1,8 +1,7 @@
 # Changelog
 
-Notable changes to Alphabetter are documented here.
-
----
+## [1.1.1] — 2026-09-07 "Fall housekeeping" *(updated post-release)*
+- Replaced Sparkle auto-installer with a lightweight built-in update checker (opens GitHub releases page) — interim solution until Developer ID signing is set up
 
 ## [1.1.1] — 2026-09-07 "Fall housekeeping"
 ### Changed
