@@ -166,12 +166,14 @@ Access via the menu bar icon or `Cmd` + `,` while the palette is open.
 
 ## License & Copyright
 
-**App Logic & Code:**
-Copyright © 2025 Mikhael Hayes. All rights reserved.
-The source code and software design of this application are proprietary. You may use this app for personal and educational purposes, but redistribution of the app's source code or modified versions of the software logic is not permitted without the author's consent.
+**Software:**
+© 2026 University of Illinois Board of Trustees. All rights reserved.
+Created by Mikhael Hayes.
 
-**IPA Data & Charts:**
+The source code and software design of this application are proprietary. You may use this app for personal and educational purposes, but redistribution of the app's source code or modified versions of the software logic is not permitted without consent.
+
+**Third party:**
 This app includes reproductions of the International Phonetic Alphabet (IPA). The IPA chart and data remain under the Creative Commons Attribution-Sharealike 3.0 Unported License (CC-BY-SA).
 
-
 "IPA Chart, http://www.internationalphoneticassociation.org/content/ipa-chart, available under a Creative Commons Attribution-Sharealike 3.0 Unported License. Copyright © 2015 International Phonetic Association."
+
