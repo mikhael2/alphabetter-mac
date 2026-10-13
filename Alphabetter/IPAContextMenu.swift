@@ -23,6 +23,20 @@ struct IPAContextMenu: ViewModifier {
 
             Divider()
 
+            Button("Copy Character (\(symbol.char))") {
+                NSPasteboard.general.clearContents()
+                NSPasteboard.general.setString(symbol.char, forType: .string)
+            }
+
+            if let latex = symbol.latexCommand {
+                Button("Copy LaTeX (\(latex))") {
+                    NSPasteboard.general.clearContents()
+                    NSPasteboard.general.setString(latex, forType: .string)
+                }
+            }
+
+            Divider()
+
             Menu("Add to Profile...") {
                 if profileManager.profiles.isEmpty {
                     Text("No profiles found")

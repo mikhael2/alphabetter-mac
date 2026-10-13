@@ -1,7 +1,7 @@
 # Alphabetter for macOS
 ˈæɫ.fəˌbɛ.ɾɚ ɪz æn æp fɔɹ using the International Phonetic Alphabet. The IPA is accessible via key cycling and a palette. And yes, I actually typed that first bit using my app, and you can too!
 
-![Version](https://img.shields.io/badge/version-1.1.0-blue) ![Platform](https://img.shields.io/badge/platform-macOS%2014.6%2B-lightgrey)
+![Version](https://img.shields.io/badge/version-1.2.0-blue) ![Platform](https://img.shields.io/badge/platform-macOS%2014.6%2B-lightgrey)
 
 <img src="Screenshots/screenshot3.png" width="300" alt="Alphabetter app icon">
 
@@ -120,7 +120,7 @@ If you can't remember a shortcut or need to search by name, open the palette.
 
 - **Shortcut**: Hold `Right Option` + `Spacebar` (this is customizable in the app settings).
 
-- **Tooltips**: Hover over symbols to see their descriptions, shortcuts (if available), and unicode ID.
+- **Tooltips**: Hover over symbols to see their descriptions, shortcuts, Unicode code point, and LaTeX TIPA commands (`\textipa{...}`). You can customize which details appear in Settings.
 
 <img src="Screenshots/screenshot1.png" width="400" alt="Alphabetter tooltips">
 
@@ -149,9 +149,9 @@ Access via the menu bar icon or `Cmd` + `,` while the palette is open.
 
 - **Global Shortcut**: Change the key used to toggle the visual palette (default: `Right Option + Space`).
 - **Custom Profiles**: Create named subsets of IPA characters. Right-click any symbol anywhere to add it to a profile. Switch profiles in the Search tab.
-- **Appearance**: Choose accent color and light/dark/system theme.
+- **Tooltip Details**: Choose which details are displayed in symbol tooltips (keyboard shortcut, Unicode code point, and LaTeX `\textipa` command).
+- **Appearance & Icons**: Choose accent color, light/dark/system theme, and toggle whether Alphabetter shows an icon in the macOS Dock, the menu bar, or both.
 - **Check for Updates**: Checks GitHub for new app versions (or updates install automatically in the background).
-- **Hide Dock Icon**: Run Alphabetter exclusively in the menu bar.
 
 ## 🗺️ Roadmap
 
@@ -176,4 +176,6 @@ The source code and software design of this application are proprietary. You may
 This app includes reproductions of the International Phonetic Alphabet (IPA). The IPA chart and data remain under the Creative Commons Attribution-Sharealike 3.0 Unported License (CC-BY-SA).
 
 "IPA Chart, http://www.internationalphoneticassociation.org/content/ipa-chart, available under a Creative Commons Attribution-Sharealike 3.0 Unported License. Copyright © 2015 International Phonetic Association."
+
+LaTeX IPA commands and syntax conform to the standard [TIPA package](https://ctan.org/pkg/tipa) for TeX/LaTeX created by Reiichi Fukui.
 

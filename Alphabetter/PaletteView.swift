@@ -58,7 +58,7 @@ struct PaletteView: View {
                     TabButton(title: "Settings", tab: 4, selectedTab: $selectedTab)
                 }
                 .id("tabs_\(appAccentColor)_\(appTheme)")
-                .padding(.top, 15)
+                .padding(.top, 24)
                 .padding(.bottom, 10)
                 
                 ZStack {
@@ -73,12 +73,14 @@ struct PaletteView: View {
                 HStack(alignment: .firstTextBaseline) {
                     if hoverState.isHovering {
                         Text(hoverState.info)
-                            .font(.system(size: 14))
+                            .font(.system(size: 13))
                             .fontWeight(.medium)
                             .foregroundColor(.primary.opacity(0.9)) // Dynamically adapt to light/dark
+                            .lineLimit(1)
+                            .truncationMode(.tail)
                     } else {
                         Text("Hover over a symbol for details")
-                            .font(.system(size: 14))
+                            .font(.system(size: 13))
                             .foregroundColor(.secondary)
                     }
                     Spacer()
@@ -94,7 +96,7 @@ struct PaletteView: View {
             }
             .id("palette_\(appTheme)") // Force overall view interior trait re-evaluation on theme switch
         }
-        .frame(minWidth: 500, minHeight: 450)
+        .frame(minWidth: 540, minHeight: 450)
         .onAppear { updateAppearance(theme: appTheme) }
         .onChange(of: appTheme) { _, newValue in updateAppearance(theme: newValue) }
         .environmentObject(hoverState)

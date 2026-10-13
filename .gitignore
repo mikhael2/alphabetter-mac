@@ -15,6 +15,10 @@ bin/
 
 # Editor Workspace Files
 *.code-workspace
+.vscode/
 
 # Utility Scripts
 inspect_image.swift
+
+# Reference Files
+tipachart_mod.pdf

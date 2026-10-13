@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.2.0] — 2026-10-13 "TIPA Tips 🍂"
+
+### New Features
+
+- **TIPA Integration** — Just in time for term papers! Tooltips now display LaTeX `\textipa{...}` commands for the `tipa` package.
+- **Customizable Tooltip Details** — Relatedly, you'll find a Settings section that lets you toggle tooltips (Keyboard shortcuts, Unicode `U+XXXX` numbers, and LaTeX `\textipa` commands).
+- **Copy and Paste** — Right-clicking any IPA symbol now gives instant options to copy either the character itself or its `\textipa{...}` LaTeX command directly to your clipboard. You can also toggle an option in Settings to copy clicked symbols to your clipboard instead of (or in addition to) direct insertion at cursor.
+
+### Improvements
+
+**Minor visual things:**
+- The palette window's title bar is blended and Liquid Glass-y.
+- Renamed icon settings to positive "Show" language ("Show Dock Icon" and "Show Menu Bar Icon"), both enabled by default.
+
+### Bug Fixes
+
+- **Accessibility & Input Monitoring Permissions** — Fixed permission preflight and event tap creation so global shortcuts and cycling work reliably on macOS 27.2 Golden Gate.
+- **Fixed Double-Typing** — Some event tap duplication that was causing symbols to insert twice; this should be fixed now.
+
 ## [1.1.1] — 2026-09-07 "Fall housekeeping" *(updated post-release)*
 - Replaced Sparkle auto-installer with a lightweight built-in update checker (opens GitHub releases page) — interim solution until Developer ID signing is set up
 

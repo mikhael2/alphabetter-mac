@@ -7,11 +7,15 @@ struct SettingsView: View {
     @State private var latestVersion: String = ""
     private enum UpdateStatus { case idle, checking, upToDate, available, error }
 
-    @AppStorage("hideDockIcon") private var hideDockIcon = false
+    @AppStorage("showDockIcon") private var showDockIcon = true
     @AppStorage("showMenuBarIcon") private var showMenuBarIcon = true
     @AppStorage("launchAtLogin") private var launchAtLogin = false
     @AppStorage("appTheme") private var appTheme = 0 // 0: System, 1: Light, 2: Dark
     @AppStorage("appAccentColor") private var appAccentColor = 0
+    @AppStorage("copyToClipboardOnInsert") private var copyToClipboardOnInsert = false
+    @AppStorage("showTooltipShortcut") private var showTooltipShortcut = true
+    @AppStorage("showTooltipUnicode") private var showTooltipUnicode = true
+    @AppStorage("showTooltipLatex") private var showTooltipLatex = true
 
     @State private var needsMenuBarRestart = false
 
@@ -99,6 +103,14 @@ struct SettingsView: View {
                         .onAppear {
                             launchAtLogin = SMAppService.mainApp.status == .enabled
                         }
+
+                    Toggle("Copy to clipboard when clicking in palette", isOn: $copyToClipboardOnInsert)
+                }
+
+                Section(header: Text("Tooltip Details")) {
+                    Toggle("Show Keyboard Shortcut", isOn: $showTooltipShortcut)
+                    Toggle("Show Unicode Code", isOn: $showTooltipUnicode)
+                    Toggle("Show LaTeX Command (\\textipa)", isOn: $showTooltipLatex)
                 }
 
                 Section(header: Text("Appearance")) {
@@ -119,16 +131,16 @@ struct SettingsView: View {
                         Text("Gray").tag(6)
                     }
 
-                    Toggle("Hide Dock Icon", isOn: $hideDockIcon)
-                        .onChange(of: hideDockIcon) { _, isHidden in
-                            NSApp.setActivationPolicy(isHidden ? .accessory : .regular)
-                            if !isHidden { NSApp.activate(ignoringOtherApps: true) }
+                    Toggle("Show Dock Icon", isOn: $showDockIcon)
+                        .onChange(of: showDockIcon) { _, isShown in
+                            NSApp.setActivationPolicy(isShown ? .regular : .accessory)
+                            if isShown { NSApp.activate(ignoringOtherApps: true) }
                         }
 
-                    Toggle("Hide Menu Bar Icon", isOn: Binding(
-                        get: { !showMenuBarIcon },
-                        set: { hideIt in
-                            showMenuBarIcon = !hideIt
+                    Toggle("Show Menu Bar Icon", isOn: Binding(
+                        get: { showMenuBarIcon },
+                        set: { isShown in
+                            showMenuBarIcon = isShown
                             needsMenuBarRestart = true
                         }
                     ))
@@ -169,9 +181,9 @@ struct SettingsView: View {
     }
 
     private var appearanceDescription: String {
-        if hideDockIcon && !showMenuBarIcon {
+        if !showDockIcon && !showMenuBarIcon {
             return "⚠️ Both icons hidden — use your shortcut to access the palette."
-        } else if hideDockIcon {
+        } else if !showDockIcon {
             return "App will run in the menu bar only."
         } else if !showMenuBarIcon {
             return "App will show in the Dock only."

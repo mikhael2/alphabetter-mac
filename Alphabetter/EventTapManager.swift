@@ -115,20 +115,101 @@ class EventTapManager {
         didSet { if let port = machPort { CGEvent.tapEnable(tap: port, enable: isEnabled) } }
     }
     
+    var isRunning: Bool { machPort != nil }
+    private var retryTimer: Timer?
+
     func start() {
         guard machPort == nil else { return }
+        
+        let isTrusted = AXIsProcessTrusted()
+        let canListen = CGPreflightListenEventAccess()
+        NSLog("[Alphabetter] EventTapManager.start() called. AXIsProcessTrusted: %d, CGPreflightListenEventAccess: %d", isTrusted ? 1 : 0, canListen ? 1 : 0)
+        
+        if !isTrusted || !canListen {
+            if !isTrusted {
+                let options = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary
+                _ = AXIsProcessTrustedWithOptions(options)
+            }
+            if !canListen {
+                CGRequestListenEventAccess()
+            }
+            DispatchQueue.main.async {
+                self.showAccessibilityAlertIfNeeded()
+            }
+            startRetryTimer()
+            return
+        }
+
+        stopRetryTimer()
         let events = (1 << CGEventType.keyDown.rawValue) | (1 << CGEventType.flagsChanged.rawValue)
-        guard let tap = CGEvent.tapCreate(tap: .cghidEventTap, place: .headInsertEventTap, options: .defaultTap, eventsOfInterest: CGEventMask(events), callback: eventTapCallback, userInfo: UnsafeMutableRawPointer(Unmanaged.passUnretained(self).toOpaque())) else { return }
+        guard let tap = CGEvent.tapCreate(tap: .cghidEventTap, place: .headInsertEventTap, options: .defaultTap, eventsOfInterest: CGEventMask(events), callback: eventTapCallback, userInfo: UnsafeMutableRawPointer(Unmanaged.passUnretained(self).toOpaque())) else {
+            NSLog("[Alphabetter] Failed to create CGEvent tap; retrying...")
+            startRetryTimer()
+            return
+        }
         self.machPort = tap
         guard let source = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, tap, 0) else { return }
         self.runLoopSource = source
         CFRunLoopAddSource(CFRunLoopGetCurrent(), source, .commonModes)
         CGEvent.tapEnable(tap: tap, enable: true)
+        NSLog("[Alphabetter] Event tap successfully created and enabled!")
+    }
+
+    private func startRetryTimer() {
+        guard retryTimer == nil else { return }
+        DispatchQueue.main.async {
+            let timer = Timer(timeInterval: 1.0, repeats: true) { [weak self] t in
+                guard let self = self else { t.invalidate(); return }
+                if self.isRunning {
+                    self.stopRetryTimer()
+                } else if AXIsProcessTrusted() && CGPreflightListenEventAccess() {
+                    NSLog("[Alphabetter] Permissions detected via timer! Starting event tap...")
+                    self.start()
+                }
+            }
+            RunLoop.main.add(timer, forMode: .common)
+            self.retryTimer = timer
+        }
+    }
+
+    private func stopRetryTimer() {
+        retryTimer?.invalidate()
+        retryTimer = nil
+    }
+
+    private var hasShownAccessibilityAlert = false
+    func showAccessibilityAlertIfNeeded() {
+        guard !(AXIsProcessTrusted() && CGPreflightListenEventAccess()) else { return }
+        guard !hasShownAccessibilityAlert else { return }
+        hasShownAccessibilityAlert = true
+        
+        let alert = NSAlert()
+        alert.messageText = "Accessibility & Input Monitoring Required"
+        alert.informativeText = "Alphabetter requires two permissions in System Settings → Privacy & Security:\n\n1. Input Monitoring (to detect the Right Option key)\n2. Accessibility (to type IPA characters into other apps)\n\nPlease check both sections and ensure Alphabetter is enabled."
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: "Open System Settings")
+        alert.addButton(withTitle: "Dismiss")
+        
+        NSApp.activate(ignoringOtherApps: true)
+        if alert.runModal() == .alertFirstButtonReturn {
+            if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
+                NSWorkspace.shared.open(url)
+            }
+        }
+        self.start()
     }
     
     private let eventTapCallback: CGEventTapCallBack = { (proxy, type, event, refcon) in
         guard let refcon = refcon else { return Unmanaged.passUnretained(event) }
         let manager = Unmanaged<EventTapManager>.fromOpaque(refcon).takeUnretainedValue()
+        
+        if type == .tapDisabledByTimeout || type == .tapDisabledByUserInput {
+            NSLog("[Alphabetter] Event tap disabled by system (%d). Re-enabling...", type.rawValue)
+            if let port = manager.machPort {
+                CGEvent.tapEnable(tap: port, enable: true)
+            }
+            return Unmanaged.passUnretained(event)
+        }
         
         if event.getIntegerValueField(.eventSourceUserData) == manager.magicUserData { return Unmanaged.passUnretained(event) }
         
@@ -139,8 +220,10 @@ class EventTapManager {
             if keyCode == KeyCodes.rightOption {
                 if flags.contains(.maskAlternate) {
                     manager.isRightOptionDown = true
+                    NSLog("[Alphabetter] Right Option pressed down")
                 } else {
                     manager.isRightOptionDown = false; manager.activeKey = nil; manager.cycleIndex = 0
+                    NSLog("[Alphabetter] Right Option released")
                 }
             }
             if flags.contains(.maskShift) {
@@ -158,6 +241,7 @@ class EventTapManager {
             // Palette toggle check
             if manager.useRightOptionOnly {
                 if manager.isRightOptionDown && keyCode == manager.triggerKey {
+                    NSLog("[Alphabetter] Trigger shortcut detected! Opening palette...")
                     DispatchQueue.main.async { manager.onTogglePalette?() }
                     return nil
                 }
@@ -166,6 +250,7 @@ class EventTapManager {
                 let flags = event.flags.rawValue & flagsMask
                 let targetFlags = manager.customTriggerModifiers & flagsMask
                 if flags == targetFlags && keyCode == manager.customTriggerKeyCode {
+                    NSLog("[Alphabetter] Custom trigger shortcut detected! Opening palette...")
                     DispatchQueue.main.async { manager.onTogglePalette?() }
                     return nil
                 }
@@ -208,8 +293,22 @@ class EventTapManager {
     
     // MARK: - Actions
     func insertFromMenu(_ char: String) {
+        if UserDefaults.standard.bool(forKey: "copyToClipboardOnInsert") {
+            let pb = NSPasteboard.general
+            pb.clearContents()
+            pb.setString(char, forType: .string)
+        }
+
+        guard AXIsProcessTrusted() else {
+            hasShownAccessibilityAlert = false
+            showAccessibilityAlertIfNeeded()
+            return
+        }
         NSApplication.shared.hide(nil)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { self.postIPAChar(char) }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+            NSLog("[Alphabetter] Inserting character from palette: %@", char)
+            self.postIPAChar(char)
+        }
     }
     
     private func postCleanBackspace() {

@@ -169,10 +169,28 @@ struct IPASymbol: Identifiable, Equatable {
         return parts.isEmpty ? (tags.isEmpty ? name : tags) : parts.joined(separator: " ")
     }
     
+    var latexCommand: String? {
+        IPASymbol.latexMap[char]
+    }
+    
     var tooltipInfo: String {
+        let showShortcut = UserDefaults.standard.object(forKey: "showTooltipShortcut") as? Bool ?? true
+        let showUnicode = UserDefaults.standard.object(forKey: "showTooltipUnicode") as? Bool ?? true
+        let showLatex = UserDefaults.standard.object(forKey: "showTooltipLatex") as? Bool ?? true
+        
         var parts = [description.capitalized]
-        if let shortcut = EventTapManager.shared.findShortcut(for: char) { parts.append("Key: \(shortcut)") }
-        if let scalar = char.unicodeScalars.first { parts.append(String(format: "U+%04X", scalar.value)) }
+        if showShortcut, let shortcut = EventTapManager.shared.findShortcut(for: char) {
+            parts.append(shortcut)
+        }
+        if showUnicode {
+            let scalars = char.unicodeScalars.map { String(format: "U+%04X", $0.value) }.joined(separator: " ")
+            if !scalars.isEmpty {
+                parts.append(scalars)
+            }
+        }
+        if showLatex, let latex = latexCommand {
+            parts.append(latex)
+        }
         return parts.joined(separator: "  •  ")
     }
 }
@@ -478,4 +496,186 @@ class ProfileManager: ObservableObject {
         
         return validChars
     }
+}
+
+// MARK: - LaTeX TIPA Mapping
+extension IPASymbol {
+    static let latexMap: [String: String] = [
+        "p": "\\textipa{p}",
+        "b": "\\textipa{b}",
+        "t": "\\textipa{t}",
+        "d": "\\textipa{d}",
+        "ʈ": "\\textipa{\\:t}",
+        "ɖ": "\\textipa{\\:d}",
+        "c": "\\textipa{c}",
+        "ɟ": "\\textipa{\\textbardotlessj}",
+        "k": "\\textipa{k}",
+        "ɡ": "\\textipa{g}",
+        "q": "\\textipa{q}",
+        "ɢ": "\\textipa{\\;G}",
+        "ʔ": "\\textipa{P}",
+        "m": "\\textipa{m}",
+        "ɱ": "\\textipa{M}",
+        "n": "\\textipa{n}",
+        "ɳ": "\\textipa{\\:n}",
+        "ɲ": "\\textipa{\\textltailn}",
+        "ŋ": "\\textipa{N}",
+        "ɴ": "\\textipa{\\;N}",
+        "ʙ": "\\textipa{\\;B}",
+        "r": "\\textipa{r}",
+        "ʀ": "\\textipa{\\;R}",
+        "ⱱ": "\\textipa{\\textvhook}",
+        "ɾ": "\\textipa{R}",
+        "ɽ": "\\textipa{\\:r}",
+        "ɸ": "\\textipa{F}",
+        "β": "\\textipa{B}",
+        "f": "\\textipa{f}",
+        "v": "\\textipa{v}",
+        "θ": "\\textipa{T}",
+        "ð": "\\textipa{D}",
+        "s": "\\textipa{s}",
+        "z": "\\textipa{z}",
+        "ʃ": "\\textipa{S}",
+        "ʒ": "\\textipa{Z}",
+        "ʂ": "\\textipa{\\:s}",
+        "ʐ": "\\textipa{\\:z}",
+        "ç": "\\textipa{\\c{c}}",
+        "ʝ": "\\textipa{J}",
+        "x": "\\textipa{x}",
+        "ɣ": "\\textipa{G}",
+        "χ": "\\textipa{X}",
+        "ʁ": "\\textipa{K}",
+        "ħ": "\\textipa{\\textcrh}",
+        "ʕ": "\\textipa{Q}",
+        "h": "\\textipa{h}",
+        "ɦ": "\\textipa{H}",
+        "ɬ": "\\textipa{\\textbeltl}",
+        "ɮ": "\\textipa{\\textlyoghlig}",
+        "ʋ": "\\textipa{V}",
+        "ɹ": "\\textipa{\\*r}",
+        "ɻ": "\\textipa{\\:R}",
+        "j": "\\textipa{j}",
+        "ɰ": "\\textipa{\\textturnmrleg}",
+        "l": "\\textipa{l}",
+        "ɭ": "\\textipa{\\:l}",
+        "ʎ": "\\textipa{L}",
+        "ʟ": "\\textipa{\\;L}",
+        "ʍ": "\\textipa{\\*w}",
+        "w": "\\textipa{w}",
+        "ɥ": "\\textipa{4}",
+        "ʜ": "\\textipa{\\;H}",
+        "ʢ": "\\textipa{\\textbarrevglotstop}",
+        "ʡ": "\\textipa{\\textbarglotstop}",
+        "ɕ": "\\textipa{\\textctc}",
+        "ʑ": "\\textipa{\\textctz}",
+        "ɺ": "\\textipa{\\textturnlonglegr}",
+        "ɧ": "\\textipa{\\texththeng}",
+        "t͡s": "\\textipa{\\t{ts}}",
+        "t͡ʃ": "\\textipa{\\textteshlig}",
+        "t͡ɕ": "\\textipa{\\t{t\\textctc}}",
+        "ʈ͡ʂ": "\\textipa{\\t{\\:t\\:s}}",
+        "d͡z": "\\textipa{\\t{dz}}",
+        "d͡ʒ": "\\textipa{\\textdyoghlig}",
+        "d͡ʑ": "\\textipa{\\t{d\\textctz}}",
+        "ɖ͡ʐ": "\\textipa{\\t{\\:d\\:z}}",
+        "ɓ": "\\textipa{\\!b}",
+        "ɗ": "\\textipa{\\!d}",
+        "ʄ": "\\textipa{\\!j}",
+        "ɠ": "\\textipa{\\!g}",
+        "ʛ": "\\textipa{\\!G}",
+        "i": "\\textipa{i}",
+        "y": "\\textipa{y}",
+        "ɨ": "\\textipa{1}",
+        "ʉ": "\\textipa{0}",
+        "ɯ": "\\textipa{W}",
+        "u": "\\textipa{u}",
+        "ɪ": "\\textipa{I}",
+        "ʏ": "\\textipa{Y}",
+        "ʊ": "\\textipa{U}",
+        "e": "\\textipa{e}",
+        "ø": "\\textipa{\\o}",
+        "ɘ": "\\textipa{9}",
+        "ɵ": "\\textipa{8}",
+        "ɤ": "\\textipa{7}",
+        "o": "\\textipa{o}",
+        "ə": "\\textipa{@}",
+        "ɛ": "\\textipa{E}",
+        "œ": "\\textipa{\\oe}",
+        "ɜ": "\\textipa{3}",
+        "ɞ": "\\textipa{\\textcloseepsilon}",
+        "ʌ": "\\textipa{2}",
+        "ɔ": "\\textipa{O}",
+        "æ": "\\textipa{\\ae}",
+        "ɐ": "\\textipa{5}",
+        "a": "\\textipa{a}",
+        "ɶ": "\\textipa{\\OE}",
+        "ɑ": "\\textipa{A}",
+        "ɒ": "\\textipa{6}",
+        "\u{0325}": "\\textipa{\\r*{}}",
+        "\u{032C}": "\\textipa{\\v*{}}",
+        "ʰ": "\\textipa{\\super{h}}",
+        "\u{0339}": "\\textipa{\\|)}}",
+        "\u{031C}": "\\textipa{\\|(}}",
+        "\u{031F}": "\\textipa{\\|+}}",
+        "\u{0320}": "\\textipa{\\=*}}",
+        "\u{0308}": "\\textipa{\\\"{}}",
+        "\u{033D}": "\\textipa{\\|x{}}",
+        "\u{0329}": "\\textipa{\\s{}}",
+        "\u{032F}": "\\textipa{\\textsubarch{}}",
+        "˞": "\\textipa{\\textrhoticity}",
+        "\u{0324}": "\\textipa{\\\"*{}}",
+        "\u{0330}": "\\textipa{\\~*{}}",
+        "\u{033C}": "\\textipa{\\|m{}}",
+        "ʷ": "\\textipa{\\super{w}}",
+        "ʲ": "\\textipa{\\super{j}}",
+        "ˠ": "\\textipa{\\super{G}}",
+        "ˤ": "\\textipa{\\super{Q}}",
+        "\u{0334}": "\\textipa{\\|textsuperimposetilde{}}",
+        "\u{031D}": "\\textipa{\\|'}}",
+        "\u{031E}": "\\textipa{\\|`}}",
+        "\u{0318}": "\\textipa{\\|<}}",
+        "\u{0319}": "\\textipa{\\|>}}",
+        "\u{032A}": "\\textipa{\\|[}}",
+        "\u{033A}": "\\textipa{\\|]}}",
+        "\u{033B}": "\\textipa{\\textsubsquare{}}",
+        "\u{0303}": "\\textipa{\\~{}}",
+        "ⁿ": "\\textipa{\\super{n}}",
+        "ˡ": "\\textipa{\\super{l}}",
+        "\u{031A}": "\\textipa{\\textcorner}",
+        "͡": "\\textipa{\\t{}}",
+        "ˈ": "\\textipa{\"}",
+        "ˌ": "\\textipa{\"\"}",
+        "ː": "\\textipa{:}",
+        "ˑ": "\\textipa{;}",
+        "\u{0306}": "\\textipa{\\u{}}",
+        "|": "\\textipa{\\textvertline}",
+        "‖": "\\textipa{\\textdoublevertline}",
+        ".": "\\textipa{.}",
+        "‿": "\\textipa{\\t*{}}",
+        "\u{030B}": "\\textipa{\\H{}}",
+        "\u{0301}": "\\textipa{\\'}",
+        "\u{0304}": "\\textipa{\\=}",
+        "\u{0300}": "\\textipa{\\`}",
+        "\u{030F}": "\\textipa{\\H*{}}",
+        "˥": "\\textipa{\\tone{55}}",
+        "˦": "\\textipa{\\tone{44}}",
+        "˧": "\\textipa{\\tone{33}}",
+        "˨": "\\textipa{\\tone{22}}",
+        "˩": "\\textipa{\\tone{11}}",
+        "\u{030C}": "\\textipa{\\v{}}",
+        "\u{0302}": "\\textipa{\\^{}}",
+        "\u{1DC4}": "\\textipa{\\tone{45}}",
+        "\u{1DC5}": "\\textipa{\\tone{12}}",
+        "\u{1DC8}": "\\textipa{\\tone{454}}",
+        "↓": "\\textipa{\\textdownstep}",
+        "↑": "\\textipa{\\textupstep}",
+        "↗": "\\textipa{\\textglobrise}",
+        "↘": "\\textipa{\\textglobfall}",
+        "ǀ": "\\textipa{|}",
+        "ǁ": "\\textipa{||}",
+        "ǂ": "\\textipa{\\textdoublebarpipe}",
+        "ǃ": "\\textipa{!}",
+        "ʘ": "\\textipa{\\!o}"
+
+    ]
 }

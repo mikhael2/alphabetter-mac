@@ -53,9 +53,23 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var settingsWindow: NSWindow?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        UserDefaults.standard.register(defaults: [
+            "showDockIcon": true,
+            "showMenuBarIcon": true,
+            "showTooltipShortcut": true,
+            "showTooltipUnicode": true,
+            "showTooltipLatex": true
+        ])
+
         // 1. Handle Dock Icon Logic
-        let shouldHide = UserDefaults.standard.bool(forKey: "hideDockIcon")
-        NSApp.setActivationPolicy(shouldHide ? .accessory : .regular)
+        var showDock = true
+        if let storedShowDock = UserDefaults.standard.object(forKey: "showDockIcon") as? Bool {
+            showDock = storedShowDock
+        } else if let storedHideDock = UserDefaults.standard.object(forKey: "hideDockIcon") as? Bool {
+            showDock = !storedHideDock
+            UserDefaults.standard.set(showDock, forKey: "showDockIcon")
+        }
+        NSApp.setActivationPolicy(showDock ? .regular : .accessory)
 
         // 2. Setup Menu Bar
         setupStatusBar()
@@ -82,6 +96,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         manager.start()
     }
 
+    func applicationDidBecomeActive(_ notification: Notification) {
+        if !EventTapManager.shared.isRunning {
+            EventTapManager.shared.start()
+        }
+    }
+
     private func setupStatusBar() {
         statusBarItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         if let button = statusBarItem.button {
@@ -105,7 +125,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(NSMenuItem(title: "IPA Input: ON", action: nil, keyEquivalent: ""))
         menu.addItem(NSMenuItem.separator())
 
-        let searchItem = NSMenuItem(title: "Open IPA Palette...", action: #selector(openSearch), keyEquivalent: "p")
+        let searchItem = NSMenuItem(title: "Open IPA Palette...", action: #selector(openSearch), keyEquivalent: " ")
+        searchItem.keyEquivalentModifierMask = [.option]
         searchItem.target = self
         menu.addItem(searchItem)
 
@@ -197,7 +218,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // 3. Create the floating panel
         let window = NSPanel(
             contentRect: NSRect(x: 0, y: 0, width: 750, height: 500),
-            styleMask: [.titled, .closable, .nonactivatingPanel, .resizable],
+            styleMask: [.titled, .closable, .nonactivatingPanel, .resizable, .fullSizeContentView],
             backing: .buffered,
             defer: false
         )
@@ -206,6 +227,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window.level = .floating
         window.isReleasedWhenClosed = false
         window.title = "Alphabetter"
+        window.titleVisibility = .hidden
+        window.titlebarAppearsTransparent = true
+        window.titlebarSeparatorStyle = .none
+        window.isMovableByWindowBackground = true
+        window.backgroundColor = .clear
+        window.isOpaque = false
         window.center()
 
         // 5. Connect the palette view
