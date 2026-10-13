@@ -8,7 +8,7 @@
 
 ## Installation
 
-> **Important:** This app is only supported for macOS 14.2 (Sonoma) and higher (including macOS 26.2 Tahoe). Please update your computer before proceeding with the installation.
+> **Important:** This app is only supported for macOS 14.2 (Sonoma) and higher (including macOS 27.2 Golden Gate). Please update your computer before proceeding with the installation.
 
 1. Download the latest `Alphabetter.zip` from <a href="https://github.com/mikhael2/alphabetter-mac/releases" target="_blank">Releases</a>.
 2. If the file appears as `Alphabetter.app`, just open Finder and drag it into your Applications folder. If it downloads as `Alphabetter.zip`, double-click it, then drag the `.app` file into your Applications folder.

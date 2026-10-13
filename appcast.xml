@@ -9,7 +9,7 @@
             <sparkle:shortVersionString>1.2.0</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>14.6</sparkle:minimumSystemVersion>
             <sparkle:releaseNotesLink>https://raw.githubusercontent.com/mikhael2/alphabetter-mac/main/CHANGELOG.md</sparkle:releaseNotesLink>
-            <enclosure url="https://raw.githubusercontent.com/mikhael2/alphabetter-mac/main/Alphabetter.zip" length="5084525" type="application/octet-stream" sparkle:edSignature=""/>
+            <enclosure url="https://raw.githubusercontent.com/mikhael2/alphabetter-mac/main/Alphabetter.zip" length="4964191" type="application/octet-stream" sparkle:edSignature=""/>
         </item>
         <item>
             <title>1.1.1</title>
