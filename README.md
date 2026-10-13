@@ -118,7 +118,7 @@ Secondary shortcuts **also cycle** — press the same combination again to advan
 
 If you can't remember a shortcut or need to search by name, open the palette.
 
-- **Shortcut**: Hold `Right Option` + `Spacebar` (this is customizable in the app settings).
+- **Shortcut**: Press `Right Option` + `Spacebar` (this is customizable in the app settings).
 
 - **Tooltips**: Hover over symbols to see their descriptions, shortcuts, Unicode code point, and LaTeX TIPA commands (`\textipa{...}`). You can customize which details appear in Settings.
 
