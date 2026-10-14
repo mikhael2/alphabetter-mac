@@ -166,12 +166,24 @@ struct SettingsView: View {
                         .foregroundColor(.secondary)
                 }
 
-                Section(header: Text("About")) {
+                Section(header: Text("About & Legal")) {
                     HStack {
                         Text("Alphabetter for macOS")
                         Spacer()
                         Text("v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0")")
                             .foregroundColor(.secondary)
+                    }
+
+                    HStack {
+                        Text("Terms of Service")
+                        Spacer()
+                        Link(destination: URL(string: "https://github.com/mikhael2/alphabetter-mac/blob/main/TERMS_OF_SERVICE.md")!) {
+                            HStack(spacing: 4) {
+                                Text("View on GitHub")
+                                Image(systemName: "arrow.up.forward.square")
+                            }
+                            .font(.caption)
+                        }
                     }
                 }
             }

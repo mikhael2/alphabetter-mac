@@ -166,6 +166,9 @@ Access via the menu bar icon or `Cmd` + `,` while the palette is open.
 
 ## License & Copyright
 
+**Terms of Service:**
+Please review the [Terms of Service](TERMS_OF_SERVICE.md) governing the use of Alphabetter.
+
 **Software:**
 © 2026 University of Illinois Board of Trustees. All rights reserved.
 Created by Mikhael Hayes.
